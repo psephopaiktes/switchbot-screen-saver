@@ -1,0 +1,17 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+*.local
+secrets/
+credentials/
+*.pem
+*.p12
+*.keystore
+*.jks
+build/
+DerivedData/
+.swiftpm/
+.build/
+xcuserdata/
+*.xcuserstate
