@@ -2,7 +2,7 @@
 
 - 回答・プロジェクトドキュメントは原則日本語。
 - 最初に README.md と SPEC.md を読む。決定事項・未解決事項・進捗は更新して次のタスクへ引き継ぐ。
-- 現在はSwiftUI + ScreenSaverのサンプル表示プロトタイプ。Xcodeプロジェクトとプレビューアプリ、XCTestを用意済み。Macでの検証手順はdocs/MACOS_VALIDATION.mdを参照し、ビルド・実機検証済みと断定しない。
+- 現在はSwiftUI + ScreenSaverのサンプル表示プロトタイプ。Xcodeプロジェクトとプレビューアプリ、XCTestを用意済み。macOS CI（Xcode 16.4）でビルドと3件のXCTestが成功。Macでの検証手順はdocs/MACOS_VALIDATION.mdを参照し、CIの成功と描画・OSホストの手動検証を区別する。
 - SwitchBot API v1.1の認証・機器一覧・Hub 2の温湿度取得はユーザーのローカルで成功済み。25.9℃・49%は接続確認時の値。API設定を最初からやり直させない。今回はToken・Secretの入力不要。
 - ユーザーはAPI設定を1ステップずつ案内されることを希望している。完了を確認してから次へ進む。
 - Token、Secret、個人のデバイスIDをコード、ログ、スクリーンショット、コミットに含めない。チャットへの貼り付けを求めない。

@@ -25,4 +25,4 @@ Swift / SwiftUIを採用し、macOS標準のスクリーンセーバーとして
 
 `SwitchBotScreenSaver`スキームは`.saver`バンドルを生成します。インストールとOSのスクリーンセーバーホストでの確認は[検証手順](docs/MACOS_VALIDATION.md)を参照してください。
 
-LinuxクラウドではmacOS SDK・Xcodeが利用できないため、SwiftUI/ScreenSaverのビルド・XCTest・描画は未検証です。Xcodeプロジェクト、plist、スキームの整合性とSwift構文は静的に確認しています。macOS用CIはビルドとXCTestを実行する構成ですが、結果は各PRのチェックで確認してください。
+LinuxクラウドではXcodeプロジェクト、plist、スキームの整合性とSwift構文を静的に確認しています。別途[macOS CI（Xcode 16.4）](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37609639481)で`.saver`とプレビューアプリのビルド、XCTest 3件が成功しました。描画の目視確認とOSのスクリーンセーバーホストでの動作は、Macでの手動確認が必要です。

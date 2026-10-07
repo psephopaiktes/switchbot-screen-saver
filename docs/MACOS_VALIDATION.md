@@ -6,7 +6,9 @@ MacとXcode 16以降を想定した検証用構成です。XcodeのCommand Line 
 
 Linuxクラウドで確認したのはSwiftの構文と、Xcodeプロジェクトの参照・ターゲット構成、plistと共有スキームの整合性です。macOS SDKによる型チェックやリンク、XCTest、描画、OSホストによる読み込みの代わりにはなりません。
 
-macOS用GitHub Actionsには以下のビルドとXCTestを登録しています。CIの成功も、システム設定内のプレビューや実際のスクリーンセーバーの動作確認の代わりにはなりません。
+macOS用GitHub Actionsには以下のビルドとXCTestを登録しています。[2026-10-07のCI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37609639481)で、ソースコミット`4934a3d`の`.saver`のReleaseビルドとプレビューアプリのDebugビルド、XCTest 3件（失敗0件）が成功しました。使用環境はXcode 16.4（16F6）・macOS 15.5 SDKで、Releaseはarm64 / x86_64をビルドしています。macOS 13の実機互換性は確認していません。
+
+CIの成功も、システム設定内のプレビューや実際のスクリーンセーバーの動作確認の代わりにはなりません。
 
 ## ビルドとXCTest
 
@@ -61,4 +63,4 @@ open DerivedData/Build/Products/Release/SwitchBotScreenSaver.saver
 
 ## 検証結果の記録
 
-確認後、SPEC.mdの引き継ぎにMacの機種・OS・Xcodeバージョン、ビルド結果、XCTest件数、アプリ内プレビューとOSホストそれぞれの結果を追記してください。未実行・失敗・成功を区別し、未確認の挙動を確認済みと記載しないでください。現在はMacでの確認待ちです。
+確認後、SPEC.mdの引き継ぎにMacの機種・OS・Xcodeバージョン、ビルド結果、XCTest件数、アプリ内プレビューとOSホストそれぞれの結果を追記してください。未実行・失敗・成功を区別し、未確認の挙動を確認済みと記載しないでください。現在は描画とOSホストについてMacでの手動確認待ちです。

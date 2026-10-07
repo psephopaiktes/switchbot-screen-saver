@@ -53,8 +53,9 @@
 
 - 2026-09-17: 要件ドキュメントを作成。アプリ実装・認証情報取得・実機接続確認は未着手。
 - 2026-10-07（引き継ぎ受領日）: ユーザーのローカルでSwitchBot API v1.1の認証と機器一覧取得が成功済み。Hub 2から室温25.9℃・湿度49%を取得できた。これは接続確認時の値で、測定日時は未共有。クラウドから再取得した結果ではない。
-- 2026-10-07: サンプル表示のSwiftUI + ScreenSaver、プレビューアプリ、Xcode構成、macOS用CI、XCTestを追加。LinuxクラウドではSwift構文・プロジェクト構造・plist・スキームの静的検証のみ実施。macOS SDKによる型チェック、ビルド、XCTest、描画・OSホストでの動作は未検証。
-- 次の作業はMacでのビルド・XCTest・プレビューとOSホストの確認。結果を記録してからKeychainとAPIクライアントの統合へ進む。Token・Secretをこのタスクで入力する必要はない。
+- 2026-10-07: サンプル表示のSwiftUI + ScreenSaver、プレビューアプリ、Xcode構成、macOS用CI、XCTestを追加。LinuxクラウドではSwift構文・プロジェクト構造・plist・スキームの静的検証を実施。
+- 2026-10-07: [macOS CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37609639481)でソースコミット`4934a3d`を検証。Xcode 16.4（16F6）・macOS 15.5 SDKで`.saver`のReleaseビルド（arm64 / x86_64）とプレビューアプリのDebugビルドが成功。XCTest 3件、失敗0件。描画の目視確認、OSホストでの読み込み、macOS 13実機での互換性は未検証。
+- 次の作業はMacでのアプリ内プレビューの目視確認とOSホストの確認。必要に応じてローカルのビルド・XCTestも実行し、環境と結果を記録してからKeychainとAPIクライアントの統合へ進む。Token・Secretをこのタスクで入力する必要はない。
 - ユーザーはMac版とAndroid版を別々のタスクで開発する予定。
 
 ## 参考資料
