@@ -6,12 +6,23 @@
 
 ## 現在の状態
 
-企画段階。ドキュメントのみで、起動・ビルドできるアプリはまだありません。
+SwiftUIとScreenSaverを組み合わせた最小プロトタイプを追加しました。現在時刻と、固定サンプルの室温25.9℃・湿度49%を表示します。温湿度はHub 2の接続確認時の値であり、現在の実測値ではありません。画面にもサンプルと表示します。
+
+SwitchBot API v1.1の認証・機器一覧取得・Hub 2の温湿度取得はユーザーのローカル環境で成功済みです。このプロトタイプにAPI通信やToken・Secretの入力機能はありません。
 
 - [仕様と次の作業](SPEC.md)
 - [開発エージェント向け指示](AGENTS.md)
+- [Macでのビルド・検証手順](docs/MACOS_VALIDATION.md)
 - 参考: [従来のremo-portal](https://github.com/psephopaiktes/remo-portal)
 
 ## 開発方針
 
-Swift / SwiftUIを採用予定。macOS標準のスクリーンセーバーとして動くことを重視し、ScreenSaverフレームワークとの統合を先に検証します。最低対応OS、Xcodeバージョン、配布方式はその結果から決定します。
+Swift / SwiftUIを採用し、macOS標準のスクリーンセーバーとして動くことを重視します。現在の検証用ビルド設定はmacOS 13.0以降・Swift 5言語モードで、Xcode 16以降での確認を想定しています。製品としての最低対応OS・Xcodeバージョン・配布方式は実機検証後に決定します。
+
+## Macで開発を始める
+
+`SwitchBotScreenSaver.xcodeproj`をXcodeで開き、`SwitchBotSaverPreview`スキームを選択して実行します。通常のアプリウィンドウ内で実際の`ScreenSaverView`を確認できます。「時計を更新」で起動・停止、「小さいプレビュー」で設定画面相当のサイズを切り替えます。
+
+`SwitchBotScreenSaver`スキームは`.saver`バンドルを生成します。インストールとOSのスクリーンセーバーホストでの確認は[検証手順](docs/MACOS_VALIDATION.md)を参照してください。
+
+LinuxクラウドではmacOS SDK・Xcodeが利用できないため、SwiftUI/ScreenSaverのビルド・XCTest・描画は未検証です。Xcodeプロジェクト、plist、スキームの整合性とSwift構文は静的に確認しています。macOS用CIはビルドとXCTestを実行する構成ですが、結果は各PRのチェックで確認してください。

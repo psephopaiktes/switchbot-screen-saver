@@ -1,0 +1,566 @@
+// !$*UTF8*$!
+{
+	archiveVersion = "1";
+	classes = {
+	};
+	objectVersion = "56";
+	objects = {
+		9AD9E0614A3B1F1CA9CC294D = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/RoomReading.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		E08A53D9FE16948F38934336 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/SaverClock.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		406C323F416C3713069780E3 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/ClockAndRoomView.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		E19F5C27BC4C72836CA135C8 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/SwitchBotScreenSaverView.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		073D4FDE6390CA09C7A83B71 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Preview/SwitchBotSaverPreviewApp.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		4E795419B421AD9F1FD4BECB = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Tests/ScreenSaverTests.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		2397125C2208D51AB51A52D3 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "text.plist.xml";
+			path = "Resources/ScreenSaver-Info.plist";
+			sourceTree = "SOURCE_ROOT";
+		};
+		8BD2FC20C69A1E6BAD334CD6 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "wrapper.framework";
+			name = "AppKit.framework";
+			path = "System/Library/Frameworks/AppKit.framework";
+			sourceTree = "SDKROOT";
+		};
+		885C90F66F9A72E63491669F = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "wrapper.framework";
+			name = "SwiftUI.framework";
+			path = "System/Library/Frameworks/SwiftUI.framework";
+			sourceTree = "SDKROOT";
+		};
+		F2747E54D85988BC7F6C1853 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "wrapper.framework";
+			name = "ScreenSaver.framework";
+			path = "System/Library/Frameworks/ScreenSaver.framework";
+			sourceTree = "SDKROOT";
+		};
+		55071A9201A8CA4201704A6E = {
+			isa = "PBXFileReference";
+			explicitFileType = "wrapper.cfbundle";
+			includeInIndex = "0";
+			path = "SwitchBotScreenSaver.saver";
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		4B6D9501D618305F9ACC579B = {
+			isa = "PBXBuildFile";
+			fileRef = "9AD9E0614A3B1F1CA9CC294D";
+		};
+		146955F4DBC245D82073250C = {
+			isa = "PBXBuildFile";
+			fileRef = "E08A53D9FE16948F38934336";
+		};
+		287BC57D12B9B9CA27528C63 = {
+			isa = "PBXBuildFile";
+			fileRef = "406C323F416C3713069780E3";
+		};
+		90F65E5ADECB95F824CDFC6C = {
+			isa = "PBXBuildFile";
+			fileRef = "E19F5C27BC4C72836CA135C8";
+		};
+		521D7B4CDCA26DD87D056E4E = {
+			isa = "PBXSourcesBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+				"4B6D9501D618305F9ACC579B",
+				"146955F4DBC245D82073250C",
+				"287BC57D12B9B9CA27528C63",
+				"90F65E5ADECB95F824CDFC6C",
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		BE18B7310B6B78AA2FACC679 = {
+			isa = "PBXBuildFile";
+			fileRef = "8BD2FC20C69A1E6BAD334CD6";
+		};
+		EFFFD009F1D30D05ADBB2579 = {
+			isa = "PBXBuildFile";
+			fileRef = "885C90F66F9A72E63491669F";
+		};
+		3A392E7F1ABB91C65EFE2C77 = {
+			isa = "PBXBuildFile";
+			fileRef = "F2747E54D85988BC7F6C1853";
+		};
+		0EEAC793D235922E0FF2F1BE = {
+			isa = "PBXFrameworksBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+				"BE18B7310B6B78AA2FACC679",
+				"EFFFD009F1D30D05ADBB2579",
+				"3A392E7F1ABB91C65EFE2C77",
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		0C3AA5530A9CFAAB4AA1879E = {
+			isa = "PBXResourcesBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		CC2D26E48C96425190314C9A = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.psephopaiktes.SwitchBotScreenSaver";
+				SWIFT_VERSION = "5.0";
+				CODE_SIGN_STYLE = "Manual";
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = "YES";
+				INFOPLIST_FILE = "Resources/ScreenSaver-Info.plist";
+				GENERATE_INFOPLIST_FILE = "NO";
+				WRAPPER_EXTENSION = "saver";
+				MACH_O_TYPE = "mh_bundle";
+				SKIP_INSTALL = "YES";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "YES";
+			};
+			name = "Debug";
+		};
+		5D782C8EE8425C7424F59DF1 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.psephopaiktes.SwitchBotScreenSaver";
+				SWIFT_VERSION = "5.0";
+				CODE_SIGN_STYLE = "Manual";
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = "YES";
+				INFOPLIST_FILE = "Resources/ScreenSaver-Info.plist";
+				GENERATE_INFOPLIST_FILE = "NO";
+				WRAPPER_EXTENSION = "saver";
+				MACH_O_TYPE = "mh_bundle";
+				SKIP_INSTALL = "YES";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "YES";
+			};
+			name = "Release";
+		};
+		5D5A4EF9F675843962068DDB = {
+			isa = "XCConfigurationList";
+			buildConfigurations = (
+				"CC2D26E48C96425190314C9A",
+				"5D782C8EE8425C7424F59DF1",
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		2C4E450384281D850E5CA529 = {
+			isa = "PBXNativeTarget";
+			buildConfigurationList = "5D5A4EF9F675843962068DDB";
+			buildPhases = (
+				"521D7B4CDCA26DD87D056E4E",
+				"0EEAC793D235922E0FF2F1BE",
+				"0C3AA5530A9CFAAB4AA1879E",
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SwitchBotScreenSaver";
+			productName = "SwitchBotScreenSaver";
+			productReference = "55071A9201A8CA4201704A6E";
+			productType = "com.apple.product-type.bundle";
+		};
+		E1DB0819C77081234DFDB059 = {
+			isa = "PBXFileReference";
+			explicitFileType = "wrapper.application";
+			includeInIndex = "0";
+			path = "SwitchBotSaverPreview.app";
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		AAFF11474909724198742CEC = {
+			isa = "PBXBuildFile";
+			fileRef = "9AD9E0614A3B1F1CA9CC294D";
+		};
+		E8622D99DC3EF9A0D4FB6721 = {
+			isa = "PBXBuildFile";
+			fileRef = "E08A53D9FE16948F38934336";
+		};
+		1133C8EAC74A10233D587BBB = {
+			isa = "PBXBuildFile";
+			fileRef = "406C323F416C3713069780E3";
+		};
+		80356DB0FB2600254C0D6997 = {
+			isa = "PBXBuildFile";
+			fileRef = "E19F5C27BC4C72836CA135C8";
+		};
+		1312D5357B9FE9496BA7B6D9 = {
+			isa = "PBXBuildFile";
+			fileRef = "073D4FDE6390CA09C7A83B71";
+		};
+		1CB01341D01C2C6EA15D1B68 = {
+			isa = "PBXSourcesBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+				"AAFF11474909724198742CEC",
+				"E8622D99DC3EF9A0D4FB6721",
+				"1133C8EAC74A10233D587BBB",
+				"80356DB0FB2600254C0D6997",
+				"1312D5357B9FE9496BA7B6D9",
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		06CFB0FB5FCBFBBDC9B5A7B4 = {
+			isa = "PBXBuildFile";
+			fileRef = "8BD2FC20C69A1E6BAD334CD6";
+		};
+		88A2F35072856A4F873FE802 = {
+			isa = "PBXBuildFile";
+			fileRef = "885C90F66F9A72E63491669F";
+		};
+		E0C831FD81C117C6B2AD338C = {
+			isa = "PBXBuildFile";
+			fileRef = "F2747E54D85988BC7F6C1853";
+		};
+		CE973F5180C57FDCF974B491 = {
+			isa = "PBXFrameworksBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+				"06CFB0FB5FCBFBBDC9B5A7B4",
+				"88A2F35072856A4F873FE802",
+				"E0C831FD81C117C6B2AD338C",
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		9E1A88E7F07FC0B6601760F7 = {
+			isa = "PBXResourcesBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		185960BCEB4BA604B3B61D46 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.psephopaiktes.SwitchBotSaverPreview";
+				SWIFT_VERSION = "5.0";
+				CODE_SIGN_STYLE = "Manual";
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "0.1.0";
+				INFOPLIST_KEY_NSPrincipalClass = "NSApplication";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+			};
+			name = "Debug";
+		};
+		DDE47F8824C064697A626AB4 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.psephopaiktes.SwitchBotSaverPreview";
+				SWIFT_VERSION = "5.0";
+				CODE_SIGN_STYLE = "Manual";
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "0.1.0";
+				INFOPLIST_KEY_NSPrincipalClass = "NSApplication";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+			};
+			name = "Release";
+		};
+		460FD30B690E2D565F0E82B1 = {
+			isa = "XCConfigurationList";
+			buildConfigurations = (
+				"185960BCEB4BA604B3B61D46",
+				"DDE47F8824C064697A626AB4",
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		B0610803C5CF9B84FAEEEAE7 = {
+			isa = "PBXNativeTarget";
+			buildConfigurationList = "460FD30B690E2D565F0E82B1";
+			buildPhases = (
+				"1CB01341D01C2C6EA15D1B68",
+				"CE973F5180C57FDCF974B491",
+				"9E1A88E7F07FC0B6601760F7",
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SwitchBotSaverPreview";
+			productName = "SwitchBotSaverPreview";
+			productReference = "E1DB0819C77081234DFDB059";
+			productType = "com.apple.product-type.application";
+		};
+		230A73B1023047BD7EB3FA30 = {
+			isa = "PBXFileReference";
+			explicitFileType = "wrapper.cfbundle";
+			includeInIndex = "0";
+			path = "ScreenSaverTests.xctest";
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		22E77F9F2813CF66FD5636EE = {
+			isa = "PBXBuildFile";
+			fileRef = "4E795419B421AD9F1FD4BECB";
+		};
+		D7A80A320BFA33FDB3BAE2DE = {
+			isa = "PBXSourcesBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+				"22E77F9F2813CF66FD5636EE",
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		89673253D2BAB1637B863449 = {
+			isa = "PBXFrameworksBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		5B6669F1C3151632D8AE8DCC = {
+			isa = "PBXResourcesBuildPhase";
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		8BEB40C7C826FCEBFC9D5AA7 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.psephopaiktes.ScreenSaverTests";
+				SWIFT_VERSION = "5.0";
+				CODE_SIGN_STYLE = "Manual";
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "0.1.0";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwitchBotSaverPreview.app/Contents/MacOS/SwitchBotSaverPreview";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+			};
+			name = "Debug";
+		};
+		6674F23A6EF905860874F6C2 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.psephopaiktes.ScreenSaverTests";
+				SWIFT_VERSION = "5.0";
+				CODE_SIGN_STYLE = "Manual";
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "0.1.0";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwitchBotSaverPreview.app/Contents/MacOS/SwitchBotSaverPreview";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+			};
+			name = "Release";
+		};
+		249ED43456CBF55C0F6214EF = {
+			isa = "XCConfigurationList";
+			buildConfigurations = (
+				"8BEB40C7C826FCEBFC9D5AA7",
+				"6674F23A6EF905860874F6C2",
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		25A640B699F944DC77F1F1FE = {
+			isa = "PBXContainerItemProxy";
+			containerPortal = "244210E48437B6556980A702";
+			proxyType = "1";
+			remoteGlobalIDString = "B0610803C5CF9B84FAEEEAE7";
+			remoteInfo = "SwitchBotSaverPreview";
+		};
+		25E506C77AE10A94A633D071 = {
+			isa = "PBXTargetDependency";
+			target = "B0610803C5CF9B84FAEEEAE7";
+			targetProxy = "25A640B699F944DC77F1F1FE";
+		};
+		8B10BC20DA8EDEBDE239437C = {
+			isa = "PBXNativeTarget";
+			buildConfigurationList = "249ED43456CBF55C0F6214EF";
+			buildPhases = (
+				"D7A80A320BFA33FDB3BAE2DE",
+				"89673253D2BAB1637B863449",
+				"5B6669F1C3151632D8AE8DCC",
+			);
+			buildRules = (
+			);
+			dependencies = (
+				"25E506C77AE10A94A633D071",
+			);
+			name = "ScreenSaverTests";
+			productName = "ScreenSaverTests";
+			productReference = "230A73B1023047BD7EB3FA30";
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		0A3E27B8CA818264D75C8D81 = {
+			isa = "PBXGroup";
+			children = (
+				"55071A9201A8CA4201704A6E",
+				"E1DB0819C77081234DFDB059",
+				"230A73B1023047BD7EB3FA30",
+			);
+			name = "Products";
+			sourceTree = "<group>";
+		};
+		E2AA269EB967A8853A258BFA = {
+			isa = "PBXGroup";
+			children = (
+				"8BD2FC20C69A1E6BAD334CD6",
+				"885C90F66F9A72E63491669F",
+				"F2747E54D85988BC7F6C1853",
+			);
+			name = "Frameworks";
+			sourceTree = "<group>";
+		};
+		0D6E4079E36703EBD37C0072 = {
+			isa = "PBXGroup";
+			children = (
+				"9AD9E0614A3B1F1CA9CC294D",
+				"E08A53D9FE16948F38934336",
+				"406C323F416C3713069780E3",
+				"E19F5C27BC4C72836CA135C8",
+				"073D4FDE6390CA09C7A83B71",
+				"4E795419B421AD9F1FD4BECB",
+				"2397125C2208D51AB51A52D3",
+				"E2AA269EB967A8853A258BFA",
+				"0A3E27B8CA818264D75C8D81",
+			);
+			sourceTree = "<group>";
+		};
+		184B519F8E1416CCE38CFFD7 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				SDKROOT = "macosx";
+				MACOSX_DEPLOYMENT_TARGET = "13.0";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				SWIFT_VERSION = "5.0";
+				SWIFT_STRICT_CONCURRENCY = "targeted";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ONLY_ACTIVE_ARCH = "YES";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+			};
+			name = "Debug";
+		};
+		A824290273A346217D9BE6F4 = {
+			isa = "XCBuildConfiguration";
+			buildSettings = {
+				SDKROOT = "macosx";
+				MACOSX_DEPLOYMENT_TARGET = "13.0";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				SWIFT_VERSION = "5.0";
+				SWIFT_STRICT_CONCURRENCY = "targeted";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ONLY_ACTIVE_ARCH = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+			};
+			name = "Release";
+		};
+		9F6B1A7BCFF26D263B843F95 = {
+			isa = "XCConfigurationList";
+			buildConfigurations = (
+				"184B519F8E1416CCE38CFFD7",
+				"A824290273A346217D9BE6F4",
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		244210E48437B6556980A702 = {
+			isa = "PBXProject";
+			attributes = {
+				BuildIndependentTargetsInParallel = "YES";
+				LastUpgradeCheck = "1600";
+				TargetAttributes = {
+					2C4E450384281D850E5CA529 = {
+						CreatedOnToolsVersion = "16.0";
+					};
+					B0610803C5CF9B84FAEEEAE7 = {
+						CreatedOnToolsVersion = "16.0";
+					};
+					8B10BC20DA8EDEBDE239437C = {
+						CreatedOnToolsVersion = "16.0";
+						TestTargetID = "B0610803C5CF9B84FAEEEAE7";
+					};
+				};
+			};
+			buildConfigurationList = "9F6B1A7BCFF26D263B843F95";
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "ja";
+			hasScannedForEncodings = "0";
+			knownRegions = (
+				"ja",
+				"en",
+				"Base",
+			);
+			mainGroup = "0D6E4079E36703EBD37C0072";
+			productRefGroup = "0A3E27B8CA818264D75C8D81";
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				"2C4E450384281D850E5CA529",
+				"B0610803C5CF9B84FAEEEAE7",
+				"8B10BC20DA8EDEBDE239437C",
+			);
+		};
+	};
+	rootObject = "244210E48437B6556980A702";
+}
