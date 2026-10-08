@@ -23,8 +23,8 @@
 - Xcodeプロジェクトに`.saver`、プレビューアプリ、XCTestの3ターゲット。
 - deployment targetは検証用macOS 13、Swift 5言語モード。製品の最低対応OSは未確定。
 - `scripts/package.sh`でReleaseのarm64 / x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成を確認してZIPを作る。ZIPには`.saver`と日本語・英語のインストール案内を同梱する。
-- macOS 15、26、27（`xcode-27`イメージ）のCIでパッケージとXCTestを検証する。`vX.Y.Z`タグのpushで既存CIを呼び出し、全環境が成功したらZIPをGitHub Releaseへ添付する。ダウンロード先は固定のReleasesページ。README.mdは英語、README.ja.mdは日本語で初見ユーザー向けの説明に絞る。OGP.pngはユーザーが後で追加する。
-- 無料ダウンロード配布とし、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない。ad-hoc署名の配布物をOSの「このまま開く」で個別に許可する手順をREADMEに記載する。公開範囲・ライセンス・App Store配布は未決定。更新後の許可操作とKeychainアクセスは実機で確認する。
+- macOS 15、26、27（`xcode-27`イメージ）のCIでパッケージとXCTestを検証する。`vX.Y.Z`タグのpushで既存CIを呼び出し、全環境が成功したらZIPをGitHub Releaseへ添付する。ダウンロード先は固定のReleasesページ。README.mdは英語、README.ja.mdは日本語で初見ユーザー向けの説明に絞る。OGP.pngと一覧サムネイルはユーザー提供のPNGを使用する。
+- 無料ダウンロード配布とし、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない。ad-hoc署名の配布物をOSの「このまま開く」で個別に許可する手順をREADMEに記載する。GitHubリポジトリとReleaseをPublicで無料配布する方針。公開設定の変更は連携の管理権限不足（HTTP 403）で未完了。ライセンス・App Store配布は未決定。更新後の許可操作とKeychainアクセスは実機で確認する。
 - [インストール](docs/INSTALL.md) / [Macでの検証](docs/MACOS_VALIDATION.md) / [リリース手順](docs/RELEASING.md)。
 
 ## 確認済みの進捗
@@ -67,13 +67,15 @@
 
 - 2026-10-08: 画像追加ソース`af7f5d4`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37748071570)でmacOS 15 / 26 / 27のビルド・署名検証・バンドルからのサムネイル2枚のAppKit読み込み・各17テスト（失敗0）が成功。`v0.3.2`タグの[Releaseワークフロー](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37748208346)も成功し、[0.3.2のRelease](https://github.com/psephopaiktes/switchbot-screen-saver/releases/tag/v0.3.2)へZIPを添付。実際のRelease ZIPをダウンロードし、CRC、0.3.2（build 8）、サムネイル2枚が元PNGとバイト単位で一致すること、TIFFへ変換されていないことを確認。OGPはタグ付き英日READMEの参照先に存在。PR #2へ反映済み。macOS 27のシステム設定一覧でのサムネイル表示は実機確認待ち。mainの統合・private設定は変更していない。
 
+- 2026-10-08: ユーザーがPR #2をmainへマージし、1.0のReleaseとPublicへの変更を指示。マージコミット`37987d8`から1.0.0（build 9）へ更新し、ログのバージョンと配布ドキュメントを揃える。新機能の変更はない。macOS CIの成功後にmainのリリースコミットへ`v1.0.0`タグを付け、既存ReleaseワークフローでZIPを配布する。
+
 ## 次の確認と未解決事項
 
 1. システム設定を終了し、0.3.1に差し替えて再起動する。保存済みの設定を読み直してサンプルから実測値へ切り替わること、「オプション」を閉じて再度開けることを確認する。OSの不具合と断定しない。
 2. 機器一覧取得はmacOS 27のオプションで成功済み。本人の認証情報を再入力させる前に、保存設定とKeychainアクセスを確認する。チャットへ送らせない。
 3. プレビューアプリ、設定ホスト、実際のスクリーンセーバーホスト間のKeychainアクセスを検証。実行主体の違いによるアクセス許可は、CIのモックでは確認できない。
 4. OSホスト内の描画、起動・停止、スリープ復帰、複数画面、通信失敗・復帰を手動確認。
-5. 無料・未公証の配布物のインストール・更新・削除、個別許可のUXを確認。公開範囲・ライセンス・製品の対応OSを決定。
+5. 無料・未公証の配布物のインストール・更新・削除、個別許可のUXを確認。ライセンス・製品の対応OSを決定。
 6. 指定Figmaノードの寸法・フォント名／ウェイト・文字サイズ・余白・線幅・色を取得し、実装へ反映。取得前に推測値を正確な値と扱わない。
 
 ## 参考資料

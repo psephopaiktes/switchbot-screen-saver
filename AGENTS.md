@@ -10,7 +10,7 @@
 - API仕様とOS仕様は実装時に公式資料で再確認する。仮定と実機確認済みの事項を区別する。
 - APIクライアントとUIを分離し、モックでUIを開発可能にする。HTTPとAPI本文両方のエラーを扱う。
 - 必要な検証は署名、レスポンス処理、主要操作など挙動を保証するものに絞る。
-- 無料ダウンロード配布、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない方針。GatekeeperはOSの「このまま開く」で個別に許可する手順を案内し、全体のセキュリティを無効化しない。公開範囲、ライセンス、ストア公開は未決定。初期GitHubリポジトリはprivate。
+- 無料ダウンロード配布、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない方針。GatekeeperはOSの「このまま開く」で個別に許可する手順を案内し、全体のセキュリティを無効化しない。ユーザーはGitHubリポジトリとReleaseをPublicで無料配布する方針を指示済み。公開設定の変更は連携の管理権限不足（HTTP 403）で未完了。実際のvisibilityを確認し、privateの間は一般公開済みと扱わない。ライセンス、ストア公開は未決定。
 
 - PRはタイトルに[Codex]を付け、本文にもCodexが実装・検証して作成した旨を明記する。
-- 配布ZIPはscripts/package.shで作成する。READMEのダウンロード先は固定のGitHub Releasesページ。vX.Y.ZタグでmacOS CIを検証後にZIPをReleaseへ添付する（docs/RELEASING.md参照）。公開配布済み／Developer ID署名・公証済みと断定しない。デザインの正確な値はFigmaノードか書き出しデータで確認し、画像からの推測値を取得済みと扱わない。READMEは短い利用手順を中心に保つ。
+- 配布ZIPはscripts/package.shで作成する。READMEのダウンロード先は固定のGitHub Releasesページ。vX.Y.ZタグでmacOS CIを検証後にZIPをReleaseへ添付する（docs/RELEASING.md参照）。Releaseの実際の公開・配布状態を確認して記載する。Developer ID署名・公証済みと断定しない。デザインの正確な値はFigmaノードか書き出しデータで確認し、画像からの推測値を取得済みと扱わない。READMEは短い利用手順を中心に保つ。
