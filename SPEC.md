@@ -60,6 +60,9 @@
 
 - 2026-10-08: ユーザーの公開準備依頼に基づき、英語READMEと日本語READMEを初見ユーザー向けに整理。固定のReleasesページへ誘導し、SwitchBot公式手順に基づくアプリv9以降のProfile → Preferences → About、バージョン10回タップ、Developer Options → Get Tokenを記載。タグごとのビルド・検証・ReleaseへのZIP添付を整備。リポジトリの公開設定は変更しない。
 
+- 2026-10-08: ソース`63f590c`の[PR CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37746341167)でmacOS 15 / 26 / 27の各17テストが成功。`v0.3.1`タグを同じコミットに作成し、[Releaseワークフロー](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37746562876)のバージョン検証・3環境の既存CI呼び出し・ZIP添付・Release公開状態への切り替えがすべて成功。[v0.3.1](https://github.com/psephopaiktes/switchbot-screen-saver/releases/tag/v0.3.1)から実際にZIPをダウンロードし、CRC、バンドルのバージョン、arm64 / x86_64、英語・日本語の案内とToken取得手順を確認。リポジトリはprivateで、一般向けの公開設定は未変更。初回Releaseは検証済みPRブランチのコミットから作成し、mainへのPR統合は未実施。
+- 2026-10-08: ユーザーがスクリーンセーバー一覧のサムネイルを用意する意向。PNGの`thumbnail.png`と`thumbnail@2x.png`の同梱方式を調査し、推奨制作サイズ180×116 / 360×232を案内。固定のOS必須サイズとは扱わず、macOS 27の表示は画像受領後に確認する。画像はチャットへのZIP添付またはmainのResources/へ、OGPはリポジトリ直下へ配置する。[画像の受け渡し](docs/ASSETS.md)参照。画像自体は未受領で、ダミー画像は作成しない。
+
 ## 次の確認と未解決事項
 
 1. システム設定を終了し、0.3.1に差し替えて再起動する。保存済みの設定を読み直してサンプルから実測値へ切り替わること、「オプション」を閉じて再度開けることを確認する。OSの不具合と断定しない。
