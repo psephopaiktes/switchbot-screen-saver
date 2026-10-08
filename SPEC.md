@@ -19,7 +19,7 @@
 - Xcodeプロジェクトに`.saver`、プレビューアプリ、XCTestの3ターゲット。
 - deployment targetは検証用macOS 13、Swift 5言語モード。製品の最低対応OSは未確定。
 - `scripts/package.sh`でReleaseのarm64 / x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成を確認してZIPを作る。ZIPには`.saver`と短いインストール案内を同梱する。
-- macOS 15と26のCIでパッケージとXCTestを検証し、ZIPを成果物として保存する。一般公開リリースはまだ作成しない。
+- macOS 15、26、27（`xcode-27`イメージ）のCIでパッケージとXCTestを検証し、ZIPを成果物として保存する。一般公開リリースはまだ作成しない。
 - 最終的な一般配布にはDeveloper ID署名・公証・Gatekeeper、アップデート後のKeychainアクセスの検証が必要。署名用資格情報は未提供。公開範囲・ライセンス・課金・App Store配布は未決定。
 - [インストール](docs/INSTALL.md) / [Macでの検証](docs/MACOS_VALIDATION.md)。
 
@@ -34,10 +34,12 @@
 - 2026-10-08: ソース`35c4b2a`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37720647396)でmacOS 15 / Xcode 16.4とmacOS 26 / Xcode 26.6の両方が成功。各環境でReleaseのarm64 / x86_64ビルド、署名検証、別プロセスのバンドル読み込み、XCTest 8件（失敗0）、試用ZIPの生成を確認。実測通信と実際のOSホストからのKeychainアクセスは未検証。
 - 2026-10-08: ユーザーから「オプションを押しても何も起きない」との報告を受領。設定シートを参照するたびに作成していた処理を、NSWindowControllerで保持する同一のNSPanelに変更。NSHostingControllerと固定サイズを使い、表示後にKeychainを読むよう変更。プレビュー側でウィンドウ接続前に表示要求を消費しないよう修正。0.2.1（build 3）として更新。
 - 2026-10-08: ソース`9296227`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37721513781)でmacOS 15 / 26のビルド・ZIP生成と各9テスト（失敗0）が成功。同じシートを返すこと、実際のNSWindowへのシート表示・終了・再表示を確認。ユーザーのシステム設定ホストでの症状解消は再確認待ち。
+- 2026-10-08: ユーザーから、症状はmacOS 27のシステム設定内のスクリーンセーバー「オプション…」で発生すると確認。画像はリポジトリに保存しない。ホストからの`configureSheet`呼び出しとウィンドウの生成・フォーカスのみを静的メッセージで記録する診断を追加。Token・Secret、機器情報はログに出さない。
+- 2026-10-08: 0.2.2（build 4）、ソース`c3a4275`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37721972270)でmacOS 15.7.9 / Xcode 16.4、26.6.2 / Xcode 26.6、27.0 / Xcode 27.0の各環境のビルド・ZIP生成・9テスト（失敗0）が成功。OS 27のAppKitシート表示・終了・再表示は確認済み。ただしシステム設定の実際のオプションボタンからの動作は未確認。
 
 ## 次の確認と未解決事項
 
-1. 自動検証は上記CIで成功。ユーザー提供のmacOS 27 SDK環境では修正後の再ビルド結果を確認する。
+1. 自動検証はmacOS 27を含め上記CIで成功。ユーザーのシステム設定を終了し、0.2.2に差し替えてオプションを再確認する。まだ開かない場合は設定専用の診断でホストからの呼び出し有無を切り分ける。OSの不具合と断定しない。
 2. Macのシステム設定「オプション」で本人のToken・Secretを入力し、機器選択と実測取得を確認。チャットへ送らせない。以前の認証成功を最初からやり直す必要はない。
 3. プレビューアプリ、設定ホスト、実際のスクリーンセーバーホスト間のKeychainアクセスを検証。実行主体の違いにより許可が必要になる可能性があり、CIのモック成功では確認済みとしない。
 4. macOS 26でのLiquid Glass、OSホスト内の描画、起動・停止、スリープ復帰、複数画面、通信失敗・復帰を手動確認。

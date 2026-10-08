@@ -39,3 +39,22 @@ Macの機種・OS・Xcodeバージョン、CIと手動確認の結果をSPEC.md�
 ## 一般配布に向けて
 
 CIのZIPは試用用です。一般配布前にDeveloper ID署名・公証・Gatekeeper、更新後のKeychainアクセス、対応OSを検証します。署名用の認証情報はチャットやリポジトリに入れず、安全なビルド設定に登録する必要があります。今回の段階では公開リリースを作成しません。
+
+## オプションが開かない場合の診断
+
+0.2.2は[macOS 27 / Xcode 27を含むCI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37721972270)でビルドと9テストが成功しています。これは通常のAppKitウィンドウへのシート表示の検証であり、システム設定のボタンから起動できることの証明ではありません。
+
+システム設定を終了して新しい`.saver`へ差し替え、開き直しても反応しない場合は、ターミナルで次を実行してから「オプション…」を押します。
+
+```sh
+log stream --level info --style compact --predicate 'subsystem == "dev.psephopaiktes.SwitchBotScreenSaver" AND category == "settings"'
+```
+
+この診断は起動・オプションの参照・ウィンドウ作成／フォーカスの静的メッセージのみです。認証情報や機器情報は記録しません。確認後はControl-Cで終了します。
+
+- `Screen saver view initialized (0.2.2)`：新しいバンドルをホストが読み込んだ。
+- `configureSheet requested (0.2.2)`：OSから設定シートを要求された。
+- `Settings panel created`：設定ウィンドウを生成した。
+- `Settings panel became key`：設定ウィンドウが入力を受け取る状態になった。
+
+起動のメッセージだけで`configureSheet requested`がない場合と、要求後に表示が止まる場合を区別します。ログが何もない場合も、バンドル未更新・ホストのキャッシュ・ログ収集条件を確認してから判断します。一般のプロセスログやAPIレスポンスは共有不要です。
