@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 import XCTest
 @testable import SwitchBotSaverPreview
 
@@ -256,6 +257,43 @@ final class ScreenSaverTests: XCTestCase {
         try await Task.sleep(nanoseconds: 90_000_000)
         let after = await client.calls
         XCTAssertEqual(after, before)
+    }
+
+    @MainActor
+    func testDashboardRendersInFullAndSmallPreviews() async throws {
+        let (repository, _) = repository()
+        let store = RoomStore(repository: repository, credentials: MemoryCredentials(nil), client: SequenceClient())
+        let owner = UUID()
+        store.activate(owner)
+        defer { store.deactivate(owner) }
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1000, height: 562),
+                              styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        let host = NSHostingView(rootView: RoomDashboardView(store: store))
+        window.contentView = host
+        window.orderFront(nil)
+        for (name, size) in [("full", NSSize(width: 1000, height: 562)),
+                             ("small", NSSize(width: 320, height: 200))] {
+            window.setContentSize(size)
+            try await Task.sleep(nanoseconds: 150_000_000)
+            host.layoutSubtreeIfNeeded()
+            let bitmap = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
+            host.cacheDisplay(in: host.bounds, to: bitmap)
+            XCTAssertGreaterThan(bitmap.pixelsWide, 0)
+            let image = NSImage(size: size)
+            image.addRepresentation(bitmap)
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "dashboard-\(name)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            if let directory = ProcessInfo.processInfo.environment["DESIGN_PREVIEW_DIR"] {
+                let url = URL(fileURLWithPath: directory, isDirectory: true)
+                try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+                try XCTUnwrap(bitmap.representation(using: .png, properties: [:]))
+                    .write(to: url.appendingPathComponent("dashboard-\(name).png"))
+            }
+        }
     }
 
     @MainActor

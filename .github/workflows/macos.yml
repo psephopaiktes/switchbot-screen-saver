@@ -25,6 +25,8 @@ jobs:
       - name: Build and package screen saver
         run: ./scripts/package.sh
       - name: Run hosted tests
+        env:
+          DESIGN_PREVIEW_DIR: ${{ github.workspace }}/build/design-previews
         run: >-
           xcodebuild -project SwitchBotScreenSaver.xcodeproj
           -scheme SwitchBotSaverPreview -configuration Debug
@@ -42,4 +44,10 @@ jobs:
         with:
           name: SwitchBotScreenSaver-${{ matrix.os }}
           path: build/SwitchBotScreenSaver-macos.zip
+          if-no-files-found: error
+      - name: Save design previews
+        uses: actions/upload-artifact@v4
+        with:
+          name: DesignPreviews-${{ matrix.os }}
+          path: build/design-previews
           if-no-files-found: error
