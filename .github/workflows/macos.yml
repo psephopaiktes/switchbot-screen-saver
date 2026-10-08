@@ -13,13 +13,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, macos-26]
+        os: [macos-15, macos-26, xcode-27]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Show Xcode version
-        run: xcodebuild -version
+        run: |
+          sw_vers
+          xcodebuild -version
       - name: Build and package screen saver
         run: ./scripts/package.sh
       - name: Run hosted tests

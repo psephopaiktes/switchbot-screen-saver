@@ -1,5 +1,10 @@
 import ScreenSaver
 import SwiftUI
+import OSLog
+
+private enum SettingsDiagnostics {
+    static let log = Logger(subsystem: "dev.psephopaiktes.SwitchBotScreenSaver", category: "settings")
+}
 
 /// Info.plistのNSPrincipalClassと一致する、ホストから生成されるクラス。
 @MainActor
@@ -22,6 +27,7 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
     }
 
     private func installContent() {
+        SettingsDiagnostics.log.info("Screen saver view initialized (0.2.2)")
         animationTimeInterval = 1
         let content = NSHostingView(rootView: RoomDashboardView(store: store))
         content.frame = bounds
@@ -45,11 +51,15 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
         super.viewWillMove(toWindow: newWindow)
     }
 
-    override var hasConfigureSheet: Bool { true }
+    override var hasConfigureSheet: Bool {
+        SettingsDiagnostics.log.info("Options availability checked (0.2.2)")
+        return true
+    }
 
     override var configureSheet: NSWindow? {
+        SettingsDiagnostics.log.info("configureSheet requested (0.2.2)")
         // ホストが複数回参照しても同じウィンドウを返す。
-        settingsController.window
+        return settingsController.window
     }
 
     @discardableResult
@@ -79,11 +89,13 @@ final class SettingsSheetController: NSWindowController, NSWindowDelegate {
         })
         // Formの推奨サイズに依存せず、表示可能な領域を確保する。
         panel.setContentSize(NSSize(width: 576, height: 560))
+        SettingsDiagnostics.log.info("Settings panel created")
     }
 
     required init?(coder: NSCoder) { nil }
 
     func windowDidBecomeKey(_ notification: Notification) {
+        SettingsDiagnostics.log.info("Settings panel became key")
         guard needsCredentialLoad else { return }
         needsCredentialLoad = false
         // Keychainの許可UIを、設定ウィンドウが表示される前に出さない。
@@ -93,6 +105,7 @@ final class SettingsSheetController: NSWindowController, NSWindowDelegate {
     func present(on parent: NSWindow) {
         guard let sheet = window, parent.attachedSheet == nil, sheet.sheetParent == nil else { return }
         parent.beginSheet(sheet)
+        SettingsDiagnostics.log.info("Settings panel presented by app")
     }
 
     func dismiss() {
@@ -101,5 +114,6 @@ final class SettingsSheetController: NSWindowController, NSWindowDelegate {
         guard let sheet = window else { return }
         sheet.sheetParent?.endSheet(sheet)
         sheet.orderOut(nil)
+        SettingsDiagnostics.log.info("Settings panel dismissed")
     }
 }
