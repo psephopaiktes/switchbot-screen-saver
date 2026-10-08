@@ -132,7 +132,7 @@ struct RoomDashboardView: View {
 /// OSにあるDINを使用する。フォントは配布物に同梱しない。
 @MainActor
 private enum DashboardFont {
-    static let numericName = ["DINCondensed-Bold", "DINAlternate-Bold"].first { NSFont(name: $0, size: 46) != nil }
+    static let numericName = ["DINAlternate-Bold", "DINCondensed-Bold"].first { NSFont(name: $0, size: 46) != nil }
     static let dateName = ["DINAlternate-Bold", "DINCondensed-Bold"].first { NSFont(name: $0, size: 18) != nil }
 
     static func numeric(size: CGFloat) -> Font {
