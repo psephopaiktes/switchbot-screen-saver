@@ -154,6 +154,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .formStyle(.grouped)
             .disabled(model.busy)
 
             if !model.message.isEmpty {
@@ -172,7 +173,7 @@ struct SettingsView: View {
             }
         }
         .padding(28)
-        .frame(width: 520)
+        .frame(width: 576, height: 560)
         .onAppear { model.loadCredentials() }
         .onDisappear { model.cancel() }
         .confirmationDialog("Keychainの認証情報を削除しますか？", isPresented: $confirmDeletion) {

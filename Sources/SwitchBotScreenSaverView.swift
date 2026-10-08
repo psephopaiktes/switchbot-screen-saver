@@ -7,7 +7,7 @@ import SwiftUI
 final class SwitchBotScreenSaverView: ScreenSaverView {
     private let owner = UUID()
     private let store: RoomStore
-    private var settingsWindow: NSWindow?
+    private lazy var settingsController = SettingsSheetController()
 
     override init?(frame: NSRect, isPreview: Bool) {
         store = .shared
@@ -48,15 +48,48 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
     override var hasConfigureSheet: Bool { true }
 
     override var configureSheet: NSWindow? {
-        let sheet = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 576, height: 460),
-                             styleMask: [.titled], backing: .buffered, defer: false)
-        sheet.title = "SwitchBotの設定"
-        sheet.contentView = NSHostingView(rootView: SettingsView { [weak sheet] in
-            guard let sheet else { return }
-            NSApp.endSheet(sheet)
-            sheet.orderOut(nil)
+        // ホストが複数回参照しても同じウィンドウを返す。
+        settingsController.window
+    }
+
+    @discardableResult
+    func presentSettings() -> Bool {
+        guard let parent = window, parent.attachedSheet == nil else { return false }
+        settingsController.present(on: parent)
+        return true
+    }
+}
+
+@MainActor
+final class SettingsSheetController: NSWindowController {
+    private let model: SettingsModel
+
+    init(model: SettingsModel? = nil) {
+        self.model = model ?? SettingsModel()
+        let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 576, height: 560),
+                            styleMask: [.titled], backing: .buffered, defer: false)
+        panel.title = "SwitchBotの設定"
+        panel.isReleasedWhenClosed = false
+        panel.hidesOnDeactivate = false
+        super.init(window: panel)
+        panel.contentViewController = NSHostingController(rootView: SettingsView(model: self.model) { [weak self] in
+            self?.dismiss()
         })
-        settingsWindow = sheet
-        return sheet
+        // Formの推奨サイズに依存せず、表示可能な領域を確保する。
+        panel.setContentSize(NSSize(width: 576, height: 560))
+    }
+
+    required init?(coder: NSCoder) { nil }
+
+    func present(on parent: NSWindow) {
+        guard let sheet = window, parent.attachedSheet == nil, sheet.sheetParent == nil else { return }
+        parent.beginSheet(sheet)
+    }
+
+    func dismiss() {
+        model.cancel()
+        guard let sheet = window else { return }
+        sheet.sheetParent?.endSheet(sheet)
+        sheet.orderOut(nil)
     }
 }

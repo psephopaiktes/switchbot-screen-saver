@@ -51,9 +51,15 @@ struct NativeSaverPreview: NSViewRepresentable {
 
     func updateNSView(_ view: SwitchBotScreenSaverView, context: Context) {
         if context.coordinator.lastSettingsRequest != settingsRequest {
-            context.coordinator.lastSettingsRequest = settingsRequest
-            if let parent = view.window, parent.attachedSheet == nil, let sheet = view.configureSheet {
-                parent.beginSheet(sheet)
+            // ウィンドウへ追加される前の更新では要求を消費しない。
+            if view.presentSettings() {
+                context.coordinator.lastSettingsRequest = settingsRequest
+            } else if view.window == nil {
+                DispatchQueue.main.async { [weak view, weak coordinator = context.coordinator] in
+                    if view?.presentSettings() == true {
+                        coordinator?.lastSettingsRequest = settingsRequest
+                    }
+                }
             }
         }
         if running {

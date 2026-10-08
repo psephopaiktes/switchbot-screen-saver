@@ -120,7 +120,10 @@ final class ScreenSaverTests: XCTestCase {
             let view = try XCTUnwrap(SwitchBotScreenSaverView(
                 frame: NSRect(x: 0, y: 0, width: 800, height: 500), isPreview: preview))
             XCTAssertTrue(view.hasConfigureSheet)
-            XCTAssertNotNil(view.configureSheet)
+            let sheet = try XCTUnwrap(view.configureSheet)
+            XCTAssertTrue(sheet === view.configureSheet, "参照ごとに別のシートを作らない")
+            XCTAssertNotNil(sheet.contentViewController)
+            XCTAssertGreaterThan(sheet.contentLayoutRect.height, 400)
             XCTAssertEqual(view.subviews.count, 1)
             view.startAnimation()
             XCTAssertTrue(view.isAnimating)
@@ -128,6 +131,29 @@ final class ScreenSaverTests: XCTestCase {
             XCTAssertFalse(view.isAnimating)
             view.setFrameSize(NSSize(width: 320, height: 200))
             XCTAssertEqual(view.subviews.first?.frame, view.bounds)
+        }
+    }
+
+    @MainActor
+    func testSettingsSheetCanPresentDismissAndReopen() async throws {
+        let (repository, _) = repository()
+        let model = SettingsModel(repository: repository, credentials: MemoryCredentials(nil),
+                                  client: SequenceClient(), onSave: {})
+        let controller = SettingsSheetController(model: model)
+        let sheet = try XCTUnwrap(controller.window)
+        let parent = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 800, height: 700),
+                              styleMask: [.titled], backing: .buffered, defer: false)
+        parent.isReleasedWhenClosed = false
+        parent.orderFront(nil)
+        defer { controller.dismiss(); parent.close() }
+        for _ in 0..<2 {
+            controller.present(on: parent)
+            try await waitUntil { sheet.sheetParent === parent && sheet.isVisible }
+            XCTAssertTrue(parent.attachedSheet === sheet)
+            XCTAssertNotNil(sheet.contentViewController?.view)
+            controller.dismiss()
+            try await waitUntil { parent.attachedSheet == nil && !sheet.isVisible }
+            XCTAssertTrue(controller.window === sheet)
         }
     }
 
