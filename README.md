@@ -6,9 +6,9 @@
 
 1. [CIの試用ZIP](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37721972270/artifacts/11525613090)をダウンロードして展開（成果物内のZIPも展開）し、`.saver`をダブルクリックしてインストール。
 2. システム設定で選択し、「オプション」を開く。
-3. サンプル表示をオフにしてToken・Secretを入力 → 機器を取得・選択 → 保存。
+3. サンプル表示をオフにしてToken・Secretを入力 → 機器を取得・選択 →「保存して表示に反映」。
 
-認証情報はKeychainに保存。5分ごとに更新します。サンプル表示なら認証情報は不要です。「ミニマル」／「Liquid Glass」（macOS 26以降）を選べます。
+認証情報はKeychainに保存。5分ごとに更新します。サンプル表示なら認証情報は不要です。
 
 現在のZIPは試用用のad-hoc署名です。一般配布向けのDeveloper ID署名・公証は未対応です。[インストールと更新](docs/INSTALL.md)
 
