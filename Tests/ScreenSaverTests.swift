@@ -200,11 +200,11 @@ final class ScreenSaverTests: XCTestCase {
         XCTAssertEqual(half.time, "08:04")
         XCTAssertEqual(half.period, "PM")
         XCTAssertEqual(DashboardFormatting.date(instant, locale: Locale(identifier: "en_US"),
-                                                calendar: calendar, timeZone: utc), "9/15/2026 Tue")
+                                                calendar: calendar, timeZone: utc), "9 / 15 / 2026 Tue")
         XCTAssertEqual(DashboardFormatting.date(instant, locale: Locale(identifier: "de_DE"),
                                                 calendar: calendar, timeZone: utc), "15.9.2026 Tue")
         XCTAssertEqual(DashboardFormatting.date(instant, locale: Locale(identifier: "ja_JP"),
-                                                calendar: calendar, timeZone: tokyo), "2026/9/16 Wed")
+                                                calendar: calendar, timeZone: tokyo), "2026 / 9 / 16 Wed")
         XCTAssertEqual(DashboardFormatting.clock(instant, format: .twelveHour, timeZone: tokyo).period, "AM")
         let midnight = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-09-16T00:00:00Z"))
         XCTAssertEqual(DashboardFormatting.clock(midnight, format: .twentyFourHour, timeZone: utc).time, "00:00")
@@ -262,7 +262,8 @@ final class ScreenSaverTests: XCTestCase {
     @MainActor
     func testDashboardRendersInFullAndSmallPreviews() async throws {
         let (repository, _) = repository()
-        let store = RoomStore(repository: repository, credentials: MemoryCredentials(nil), client: SequenceClient())
+        let store = RoomStore(repository: repository, credentials: MemoryCredentials(fixture),
+                              client: RecordingClient(value: .sample))
         let owner = UUID()
         store.activate(owner)
         defer { store.deactivate(owner) }
@@ -274,7 +275,13 @@ final class ScreenSaverTests: XCTestCase {
         window.contentView = host
         window.orderFront(nil)
         for (name, size) in [("full", NSSize(width: 1000, height: 562)),
-                             ("small", NSSize(width: 320, height: 200))] {
+                             ("small", NSSize(width: 320, height: 200)),
+                             ("live", NSSize(width: 1000, height: 562))] {
+            if name == "live" {
+                repository.save(SaverSettings(demo: false, deviceID: "fixture-hub"))
+                store.refreshSettingsIfNeeded(force: true)
+                try await waitUntil { store.updatedAt != nil }
+            }
             window.setContentSize(size)
             try await Task.sleep(nanoseconds: 150_000_000)
             host.layoutSubtreeIfNeeded()

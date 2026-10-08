@@ -25,6 +25,7 @@ enum DashboardFormatting {
         formatter.timeZone = timeZone
         formatter.setLocalizedDateFormatFromTemplate("yMd")
         let localDate = formatter.string(from: date)
+            .replacingOccurrences(of: "\\s*/\\s*", with: " / ", options: .regularExpression)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.dateFormat = "EEE"
@@ -43,7 +44,7 @@ struct RoomDashboardView: View {
                 ZStack {
                     Color.black
                     if store.settings.showsMainRow {
-                        HStack(alignment: .firstTextBaseline, spacing: 30 * scale) {
+                        HStack(alignment: .center, spacing: 30 * scale) {
                             if store.settings.showClock {
                                 clock(timeline.date, scale: scale)
                             }
@@ -102,7 +103,7 @@ struct RoomDashboardView: View {
 
     private func metric(symbol: String, title: String, value: String, unit: String,
                         scale: CGFloat) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 5 * scale) {
+        HStack(alignment: .center, spacing: 5 * scale) {
             Image(systemName: symbol)
                 .font(.system(size: 23 * scale, weight: .regular))
                 .foregroundStyle(.white.opacity(0.4))
@@ -121,8 +122,8 @@ struct RoomDashboardView: View {
         VStack(spacing: 4) {
             if store.settings.demo {
                 Text("サンプルデータ")
-            } else if let updatedAt = store.updatedAt {
-                Text("\(store.stale ? "更新停止 · " : "")最終取得 \(updatedAt.formatted(date: .omitted, time: .shortened))")
+            } else if store.stale {
+                Text("更新停止")
             }
             if !store.settings.demo && !store.message.isEmpty { Text(store.message) }
         }
