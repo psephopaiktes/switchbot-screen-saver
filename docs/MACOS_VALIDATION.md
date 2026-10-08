@@ -20,6 +20,8 @@ XCTestでは架空の認証情報とモック通信を使い、HMAC署名、対�
 
 LinuxクラウドではSwift構文・Xcode参照・plist・シェル構文を確認します。macOS用CIではビルド・XCTest・パッケージ生成を実行します。CIの成功と、実機の描画・認証・OSホストの動作を区別してください。
 
+2026-10-08の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37720647396)でソース`35c4b2a`を検証し、macOS 15 / Xcode 16.4、macOS 26 / Xcode 26.6の両方でビルド・読み込み・8テスト・ZIP生成が成功しています。Macのログで報告された設定保存コールバックのMainActorエラーはこのソースで修正済みです。macOS 27 SDKを使う手元の環境での再ビルド結果は未確認です。
+
 ## 手動で確認すること
 
 1. `SwitchBotSaverPreview`を実行し、時計がなく、黒背景にSF Symbolsと温湿度、数値より小さい`°C`／`%`が表示されること。

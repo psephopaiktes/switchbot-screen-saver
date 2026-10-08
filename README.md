@@ -4,7 +4,7 @@
 
 ## 使い方
 
-1. ビルド済みZIPを展開し、`.saver`をダブルクリックしてインストール。
+1. [CIの試用ZIP](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37720647396/artifacts/11525511681)をダウンロードして展開（成果物内のZIPも展開）し、`.saver`をダブルクリックしてインストール。
 2. システム設定で選択し、「オプション」を開く。
 3. サンプル表示をオフにしてToken・Secretを入力 → 機器を取得・選択 → 保存。
 
