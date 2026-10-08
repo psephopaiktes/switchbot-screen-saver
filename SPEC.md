@@ -65,6 +65,8 @@
 
 - 2026-10-08: ユーザー提供ZIPのOGP.png（12801×7201）、thumbnail.png（180×116）、thumbnail@2x.png（360×232）を受領。元のPNGを加工せず、OGPを英日READMEの共通画像、サムネイル2枚をスクリーンセーバーのCopy Bundle Resourcesへ登録。COMBINE_HIDPI_IMAGESをNOにしてPNG名を維持。0.3.2（build 8）として準備。LinuxではPNGの整合性・元ファイルとの一致・Xcode登録・Swift構文を検証する。macOS CIのビルド・バンドル画像読み込みと、macOS 27の実際の一覧サムネイル表示は別途確認する。GitHub認証が一時失敗したが接続が復旧。この変更のpush後にmacOS CIで検証し、0.3.2のReleaseを作成する。既存v0.3.1は上書きしない。
 
+- 2026-10-08: 画像追加ソース`af7f5d4`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37748071570)でmacOS 15 / 26 / 27のビルド・署名検証・バンドルからのサムネイル2枚のAppKit読み込み・各17テスト（失敗0）が成功。`v0.3.2`タグの[Releaseワークフロー](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37748208346)も成功し、[0.3.2のRelease](https://github.com/psephopaiktes/switchbot-screen-saver/releases/tag/v0.3.2)へZIPを添付。実際のRelease ZIPをダウンロードし、CRC、0.3.2（build 8）、サムネイル2枚が元PNGとバイト単位で一致すること、TIFFへ変換されていないことを確認。OGPはタグ付き英日READMEの参照先に存在。PR #2へ反映済み。macOS 27のシステム設定一覧でのサムネイル表示は実機確認待ち。mainの統合・private設定は変更していない。
+
 ## 次の確認と未解決事項
 
 1. システム設定を終了し、0.3.1に差し替えて再起動する。保存済みの設定を読み直してサンプルから実測値へ切り替わること、「オプション」を閉じて再度開けることを確認する。OSの不具合と断定しない。
