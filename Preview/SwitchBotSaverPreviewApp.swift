@@ -4,17 +4,20 @@ import SwiftUI
 struct SwitchBotSaverPreviewApp: App {
     @State private var running = true
     @State private var smallPreview = false
+    @State private var settingsRequest = 0
 
     var body: some Scene {
-        WindowGroup("SwitchBot Screen Saver — サンプル") {
+        WindowGroup("SwitchBot Screen Saver") {
             VStack(spacing: 0) {
                 HStack {
-                    Toggle("時計を更新", isOn: $running)
+                    Toggle("更新を実行", isOn: $running)
                     Toggle("小さいプレビュー", isOn: $smallPreview)
+                    Spacer()
+                    Button("設定…") { settingsRequest += 1 }
                 }
                 .padding()
 
-                NativeSaverPreview(running: running, isPreview: smallPreview)
+                NativeSaverPreview(running: running, isPreview: smallPreview, settingsRequest: settingsRequest)
                     .id(smallPreview)
                     .frame(
                         width: smallPreview ? 320 : nil,
@@ -32,6 +35,7 @@ struct SwitchBotSaverPreviewApp: App {
 struct NativeSaverPreview: NSViewRepresentable {
     let running: Bool
     let isPreview: Bool
+    let settingsRequest: Int
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -46,40 +50,25 @@ struct NativeSaverPreview: NSViewRepresentable {
     }
 
     func updateNSView(_ view: SwitchBotScreenSaverView, context: Context) {
+        if context.coordinator.lastSettingsRequest != settingsRequest {
+            context.coordinator.lastSettingsRequest = settingsRequest
+            if let parent = view.window, parent.attachedSheet == nil, let sheet = view.configureSheet {
+                parent.beginSheet(sheet)
+            }
+        }
         if running {
             view.startAnimation()
-            context.coordinator.startFrames(for: view)
         } else {
-            context.coordinator.stopFrames()
             view.stopAnimation()
         }
     }
 
     static func dismantleNSView(_ view: SwitchBotScreenSaverView, coordinator: Coordinator) {
-        coordinator.stopFrames()
         view.stopAnimation()
     }
 
     @MainActor
     final class Coordinator {
-        private var timer: Timer?
-
-        // 通常アプリにはOSのスクリーンセーバーホストがいないため、
-        // プレビュー側だけでホストのフレームコールバックを再現する。
-        func startFrames(for view: SwitchBotScreenSaverView) {
-            guard timer == nil else { return }
-            let timer = Timer(timeInterval: view.animationTimeInterval, repeats: true) { [weak view] _ in
-                Task { @MainActor in
-                    view?.animateOneFrame()
-                }
-            }
-            RunLoop.main.add(timer, forMode: .common)
-            self.timer = timer
-        }
-
-        func stopFrames() {
-            timer?.invalidate()
-            timer = nil
-        }
+        var lastSettingsRequest = 0
     }
 }

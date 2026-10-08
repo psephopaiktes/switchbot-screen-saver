@@ -1,65 +1,47 @@
 # 仕様: macOSスクリーンセーバー
 
-## 目的・要件
+## 要件と現在の構成
 
-- Macのスクリーンセーバーで現在時刻、室温、湿度を表示。
-- SwitchBotの温湿度取得に対応したデバイスを利用者が選択。
-- SwiftUIでネイティブUIを構築。既存のremo-portalはUXの参考とし、WebView方式の移植を前提にしない。
-- 背景と時計を複数パターンから選択。候補は単色／グラデーション背景とデジタル／アナログ時計。具体的なデザインは未決定。
-- 利用者自身のToken・Secretを設定できる設定画面。
-- 将来はApp Storeなどで配布したい。ストア配布可能と断定せず、構成と審査条件を確認する。
+- 黒背景に室温・湿度を表示するSwiftUI + ScreenSaverのネイティブスクリーンセーバー。アプリ独自の時計は表示せず、OSの時計を利用する。
+- SF Symbolsの温度計・湿度アイコン、余白を持ったカード、大きな数値、小さい`°C`／`%`を使う。
+- スタイルは設定から「ミニマル」「Liquid Glass」を選択。Liquid GlassはmacOS 26・Xcode 26以降、旧SDK／OSでは通常表示にフォールバックする。背景は黒で固定。
+- `.saver`単独で設定可能。ScreenSaverViewの`hasConfigureSheet`／`configureSheet`によるオプションにToken・Secret、機器選択、スタイル、サンプル表示を用意する。
+- Token・SecretはSecureFieldで入力し、Keychainの1つのgeneric password項目に保存する。個人の認証情報は配布物、UserDefaults、ログ、リポジトリに含めない。
+- `GET /v1.1/devices`で温湿度対応の機器を一覧表示し、`GET /v1.1/devices/{deviceId}/status`で取得を確認してから認証情報と選択を保存する。機器IDの手入力は要求しない。
+- 署名はToken + ミリ秒timestamp + nonceのHMAC-SHA256をBase64化。TLS検証を維持し、認証ヘッダーを他ホストへ転送しないようリダイレクトを拒否する。
+- APIクライアントとUIを分離し、HTTPステータスとAPI本文のstatusCodeの両方を判定する。サーバー本文や低レベル通信エラーを画面・ログにそのまま出さない。
+- 5分ごとに非同期取得する。画面がすべて停止したらキャンセル。同一ホストプロセス内の複数画面で取得を共有する。OSが別プロセスでホストする場合のプロセス間共有は未対応。
+- 未取得の値は「—」。通信失敗時には最後の値、最終取得時刻、更新停止を表示する。サンプル表示は25.9℃・49%で「サンプルデータ」と明示する。現在の実測値として扱わない。
+- 非秘密の表示設定と選択機器はScreenSaverDefaultsに保存する。サンプル表示は初期状態でオン。認証情報を削除するとサンプル表示に戻る。
 
-## 実装方針案
+## ビルド・配布
 
-- SwiftUI描画をScreenSaverViewとNSHostingViewで組み込む小さな検証から始める。プレビューと実際のスクリーンセーバーホスト両方で確認する。
-- 必要に応じて設定用のmacOSアプリを別ターゲットにする。
-- 認証情報はKeychainを基本とする。設定アプリとスクリーンセーバーホスト間でのアクセス可否は先に検証する。
-- GET /v1.1/devices で対象を選び、GET /v1.1/devices/{deviceId}/status で表示データを取得する。
-- 時計の描画更新とAPI取得を分離。APIポーリングは初期案5分間隔とし、複数画面での重複取得を避ける。
-- 通信失敗時も時計を表示し、温湿度には最終取得時刻／更新停止を表示。未取得値を0として扱わない。
-- 終了・スリープ時にポーリングを停止。ネットワーク処理で描画を止めない。
+- Xcodeプロジェクトに`.saver`、プレビューアプリ、XCTestの3ターゲット。
+- deployment targetは検証用macOS 13、Swift 5言語モード。製品の最低対応OSは未確定。
+- `scripts/package.sh`でReleaseのarm64 / x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成を確認してZIPを作る。ZIPには`.saver`と短いインストール案内を同梱する。
+- macOS 15と26のCIでパッケージとXCTestを検証し、ZIPを成果物として保存する。一般公開リリースはまだ作成しない。
+- 最終的な一般配布にはDeveloper ID署名・公証・Gatekeeper、アップデート後のKeychainアクセスの検証が必要。署名用資格情報は未提供。公開範囲・ライセンス・課金・App Store配布は未決定。
+- [インストール](docs/INSTALL.md) / [Macでの検証](docs/MACOS_VALIDATION.md)。
 
-## 次の作業・受け入れ確認
+## 確認済みの進捗
 
-1. API設定と実機の温湿度取得可否を確認（ユーザーのローカルで成功済み）。
-2. ScreenSaver + SwiftUIの最小表示、プレビュー、起動／停止を実機検証（サンプル表示の実装を追加。Macでの検証は未実施）。
-3. 認証情報の保存・ホストからの利用を検証。
-4. 時計と温湿度、エラー表示、設定画面を実装。
-5. 複数テーマ、複数ディスプレイ、スリープ復帰を確認。
-6. 署名・公証・インストール・アップデート方法とストア配布可否を調査。
+- 2026-09-17: 要件ドキュメントを作成。
+- 2026-10-07（引き継ぎ受領日）: ユーザーのローカルでSwitchBot API v1.1認証・機器一覧取得・Hub 2の温湿度取得が成功済み。室温25.9℃・湿度49%は接続確認時の値で、測定日時は未共有。クラウドの実測ではない。
+- 2026-10-07: 初期サンプルのソース`4934a3d`について[macOS CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37609639481)でXcode 16.4、ReleaseビルドとXCTest 3件が成功。
+- 2026-10-08: ユーザーが手元のMacで初期版を確認し、見た目は良いとの報告を受領。詳細なOS・機種、Keychain・API統合やスリープ復帰等の結果は未共有。
+- 2026-10-08: ユーザーの希望に合わせて時計を削除し、温湿度デザイン、選択式Liquid Glass、設定・Keychain・API連携、試用ZIP生成と短いREADMEを追加。今回の変更は自動検証と実機確認の結果を分けて記録する。
 
-最低OS、対象機種、初期テーマ、配布方式は未決定。
+## 次の確認と未解決事項
 
-## 最小プロトタイプの構成
-
-- `SwitchBotScreenSaver.xcodeproj`に`.saver`バンドル、プレビューアプリ、XCTestの3ターゲットを用意。
-- `SwitchBotScreenSaverView`をObjective-Cのクラス名として公開し、Info.plistの`NSPrincipalClass`から読み込む。`NSHostingView`内のSwiftUIで時計と温湿度を描画する。
-- サンプル値は`RoomReading.sample`に分離。25.9℃・49%を固定表示し、「サンプルデータ · Hub 2接続確認時の値」と明示する。現在の実測値や取得日時として扱わない。
-- 時計はOSホストの`animateOneFrame()`で毎秒現在時刻を更新し、開始時も更新する。停止中のコールバックは無視する。スクリーンセーバー自身に独自タイマーやAPIポーリングは追加しない。
-- プレビューアプリは実際の`ScreenSaverView`を埋め込み、プレビュー側のタイマーでOSホストのフレーム通知を再現する。停止・ビュー破棄時にタイマーを解除する。
-- 起動・停止・リサイズ・小さいプレビューの確認手順は[Macでの検証手順](docs/MACOS_VALIDATION.md)に記載。プレビューアプリでの成功だけではOSホストでの成功としない。
-- 検証用にmacOS 13.0をdeployment target、Swift 5を言語モードとした。Xcode 16以降での確認を想定するが、製品の対応要件を確定したものではない。
-- ローカル検証用のad-hoc署名設定。Developer ID署名・公証・ストア配布の検証は未実施。
-
-## APIと設定の前提
-
-- SwitchBot Open API v1.1。認証にはOpen TokenとSecretの両方が必要。
-- 利用者が認証情報を入力した後、デバイス一覧から対象を選択する。デバイスIDの手入力を通常フローにしない。
-- 初回は読み取りで接続を確認し、機種・Hub・クラウド連携の必要条件を実機で確認する。
-- 設定案内はユーザーの進捗に合わせて1ステップずつ行う。認証情報はチャットに送らせない。
-- 公式資料に個人利用の範囲と商用・大規模利用時の相談条件がある。一般配布・収益化前に適用条件を確認する。
-
-## 引き継ぎ状況
-
-- 2026-09-17: 要件ドキュメントを作成。アプリ実装・認証情報取得・実機接続確認は未着手。
-- 2026-10-07（引き継ぎ受領日）: ユーザーのローカルでSwitchBot API v1.1の認証と機器一覧取得が成功済み。Hub 2から室温25.9℃・湿度49%を取得できた。これは接続確認時の値で、測定日時は未共有。クラウドから再取得した結果ではない。
-- 2026-10-07: サンプル表示のSwiftUI + ScreenSaver、プレビューアプリ、Xcode構成、macOS用CI、XCTestを追加。LinuxクラウドではSwift構文・プロジェクト構造・plist・スキームの静的検証を実施。
-- 2026-10-07: [macOS CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37609639481)でソースコミット`4934a3d`を検証。Xcode 16.4（16F6）・macOS 15.5 SDKで`.saver`のReleaseビルド（arm64 / x86_64）とプレビューアプリのDebugビルドが成功。XCTest 3件、失敗0件。描画の目視確認、OSホストでの読み込み、macOS 13実機での互換性は未検証。
-- 次の作業はMacでのアプリ内プレビューの目視確認とOSホストの確認。必要に応じてローカルのビルド・XCTestも実行し、環境と結果を記録してからKeychainとAPIクライアントの統合へ進む。Token・Secretをこのタスクで入力する必要はない。
-- ユーザーはMac版とAndroid版を別々のタスクで開発する予定。
+1. 更新版のビルドとモックによる署名・応答処理・取得共有／停止・設定保存をCIで検証。
+2. Macのシステム設定「オプション」で本人のToken・Secretを入力し、機器選択と実測取得を確認。チャットへ送らせない。以前の認証成功を最初からやり直す必要はない。
+3. プレビューアプリ、設定ホスト、実際のスクリーンセーバーホスト間のKeychainアクセスを検証。実行主体の違いにより許可が必要になる可能性があり、CIのモック成功では確認済みとしない。
+4. macOS 26でのLiquid Glass、OSホスト内の描画、起動・停止、スリープ復帰、複数画面、通信失敗・復帰を手動確認。
+5. インストール・更新・削除のUXと署名・公証を検証し、製品の対応OSと一般配布方式を決定。
 
 ## 参考資料
 
-- [SwitchBot公式API](https://github.com/OpenWonderLabs/SwitchBotAPI)
-- [Apple Screen Saver](https://developer.apple.com/documentation/screensaver)
-- [remo-portal](https://github.com/psephopaiktes/remo-portal): READMEでWebView方式を確認。コード再利用時はライセンスを確認。
+- [SwitchBot公式API](https://github.com/OpenWonderLabs/SwitchBotAPI)：署名と機器仕様を今回再確認。
+- [Apple Screen Saver](https://developer.apple.com/documentation/screensaver)：設定シートの実装・終了方法を再確認。
+- [Apple Liquid Glass](https://developer.apple.com/documentation/swiftui/view/glasseffect(_:in:))：macOS 26での利用を確認。
+- [remo-portal](https://github.com/psephopaiktes/remo-portal)：UX参考。コード再利用時はライセンスを確認。

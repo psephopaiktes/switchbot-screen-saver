@@ -10,17 +10,17 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: macos-15
+    strategy:
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Show Xcode version
         run: xcodebuild -version
-      - name: Build screen saver bundle
-        run: >-
-          xcodebuild -project SwitchBotScreenSaver.xcodeproj
-          -scheme SwitchBotScreenSaver -configuration Release
-          -derivedDataPath DerivedData build
+      - name: Build and package screen saver
+        run: ./scripts/package.sh
       - name: Run hosted tests
         run: >-
           xcodebuild -project SwitchBotScreenSaver.xcodeproj
@@ -31,6 +31,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ScreenSaverTests-results
+          name: ScreenSaverTests-results-${{ matrix.os }}
           path: build/ScreenSaverTests.xcresult
           if-no-files-found: ignore
+      - name: Save installable ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: SwitchBotScreenSaver-${{ matrix.os }}
+          path: build/SwitchBotScreenSaver-macos.zip
+          if-no-files-found: error

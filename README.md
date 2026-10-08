@@ -1,28 +1,19 @@
-# switchbot-screen-saver
+# SwitchBot Screen Saver
 
-現在時刻・室温・湿度を表示する、SwiftUI中心のmacOSスクリーンセーバー。
+黒背景に室温・湿度を表示するmacOSスクリーンセーバー。SF Symbols、大きな数値、小さな単位で見やすく表示します。時計はOS側をご利用ください。
 
-背景と時計のデザインを複数から選べるようにし、将来的な一般配布を目指す。
+## 使い方
 
-## 現在の状態
+1. ビルド済みZIPを展開し、`.saver`をダブルクリックしてインストール。
+2. システム設定で選択し、「オプション」を開く。
+3. サンプル表示をオフにしてToken・Secretを入力 → 機器を取得・選択 → 保存。
 
-SwiftUIとScreenSaverを組み合わせた最小プロトタイプを追加しました。現在時刻と、固定サンプルの室温25.9℃・湿度49%を表示します。温湿度はHub 2の接続確認時の値であり、現在の実測値ではありません。画面にもサンプルと表示します。
+認証情報はKeychainに保存。5分ごとに更新します。サンプル表示なら認証情報は不要です。「ミニマル」／「Liquid Glass」（macOS 26以降）を選べます。
 
-SwitchBot API v1.1の認証・機器一覧取得・Hub 2の温湿度取得はユーザーのローカル環境で成功済みです。このプロトタイプにAPI通信やToken・Secretの入力機能はありません。
+現在のZIPは試用用のad-hoc署名です。一般配布向けのDeveloper ID署名・公証は未対応です。[インストールと更新](docs/INSTALL.md)
 
-- [仕様と次の作業](SPEC.md)
-- [開発エージェント向け指示](AGENTS.md)
-- [Macでのビルド・検証手順](docs/MACOS_VALIDATION.md)
-- 参考: [従来のremo-portal](https://github.com/psephopaiktes/remo-portal)
+## 開発
 
-## 開発方針
+`SwitchBotScreenSaver.xcodeproj`を開き、`SwitchBotSaverPreview`を実行。配布用ZIPはMacで`./scripts/package.sh`を実行して作成します。CIにもビルド済みZIPを保存します。
 
-Swift / SwiftUIを採用し、macOS標準のスクリーンセーバーとして動くことを重視します。現在の検証用ビルド設定はmacOS 13.0以降・Swift 5言語モードで、Xcode 16以降での確認を想定しています。製品としての最低対応OS・Xcodeバージョン・配布方式は実機検証後に決定します。
-
-## Macで開発を始める
-
-`SwitchBotScreenSaver.xcodeproj`をXcodeで開き、`SwitchBotSaverPreview`スキームを選択して実行します。通常のアプリウィンドウ内で実際の`ScreenSaverView`を確認できます。「時計を更新」で起動・停止、「小さいプレビュー」で設定画面相当のサイズを切り替えます。
-
-`SwitchBotScreenSaver`スキームは`.saver`バンドルを生成します。インストールとOSのスクリーンセーバーホストでの確認は[検証手順](docs/MACOS_VALIDATION.md)を参照してください。
-
-LinuxクラウドではXcodeプロジェクト、plist、スキームの整合性とSwift構文を静的に確認しています。別途[macOS CI（Xcode 16.4）](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37609639481)で`.saver`とプレビューアプリのビルド、XCTest 3件が成功しました。描画の目視確認とOSのスクリーンセーバーホストでの動作は、Macでの手動確認が必要です。
+[Macでの検証](docs/MACOS_VALIDATION.md) · [仕様・進捗](SPEC.md) · [開発指示](AGENTS.md)

@@ -11,18 +11,6 @@
 			path = "Sources/RoomReading.swift";
 			sourceTree = "SOURCE_ROOT";
 		};
-		E08A53D9FE16948F38934336 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "Sources/SaverClock.swift";
-			sourceTree = "SOURCE_ROOT";
-		};
-		406C323F416C3713069780E3 = {
-			isa = "PBXFileReference";
-			lastKnownFileType = "sourcecode.swift";
-			path = "Sources/ClockAndRoomView.swift";
-			sourceTree = "SOURCE_ROOT";
-		};
 		E19F5C27BC4C72836CA135C8 = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -79,14 +67,6 @@
 			isa = "PBXBuildFile";
 			fileRef = "9AD9E0614A3B1F1CA9CC294D";
 		};
-		146955F4DBC245D82073250C = {
-			isa = "PBXBuildFile";
-			fileRef = "E08A53D9FE16948F38934336";
-		};
-		287BC57D12B9B9CA27528C63 = {
-			isa = "PBXBuildFile";
-			fileRef = "406C323F416C3713069780E3";
-		};
 		90F65E5ADECB95F824CDFC6C = {
 			isa = "PBXBuildFile";
 			fileRef = "E19F5C27BC4C72836CA135C8";
@@ -96,9 +76,12 @@
 			buildActionMask = "2147483647";
 			files = (
 				"4B6D9501D618305F9ACC579B",
-				"146955F4DBC245D82073250C",
-				"287BC57D12B9B9CA27528C63",
 				"90F65E5ADECB95F824CDFC6C",
+				"AE5DCDC2E3A6557BAC4E9E89",
+				"327A8F3D357963F4FBE3D320",
+				"226C4CF39BFB598A8009B8F7",
+				"A1B4EBBDDDE81A0BDAC6DD5C",
+				"A6B8241976DADB8F56B0093E",
 			);
 			runOnlyForDeploymentPostprocessing = "0";
 		};
@@ -204,14 +187,6 @@
 			isa = "PBXBuildFile";
 			fileRef = "9AD9E0614A3B1F1CA9CC294D";
 		};
-		E8622D99DC3EF9A0D4FB6721 = {
-			isa = "PBXBuildFile";
-			fileRef = "E08A53D9FE16948F38934336";
-		};
-		1133C8EAC74A10233D587BBB = {
-			isa = "PBXBuildFile";
-			fileRef = "406C323F416C3713069780E3";
-		};
 		80356DB0FB2600254C0D6997 = {
 			isa = "PBXBuildFile";
 			fileRef = "E19F5C27BC4C72836CA135C8";
@@ -225,10 +200,13 @@
 			buildActionMask = "2147483647";
 			files = (
 				"AAFF11474909724198742CEC",
-				"E8622D99DC3EF9A0D4FB6721",
-				"1133C8EAC74A10233D587BBB",
 				"80356DB0FB2600254C0D6997",
 				"1312D5357B9FE9496BA7B6D9",
+				"119AE6D7ED0745D04F3E0165",
+				"A3D45B36B8235843B9214E85",
+				"EB639D9FED1165E85DE24961",
+				"BAE3A275AEF069C99FFBD123",
+				"5506315EC4B4A5602DCFE22E",
 			);
 			runOnlyForDeploymentPostprocessing = "0";
 		};
@@ -468,9 +446,12 @@
 		0D6E4079E36703EBD37C0072 = {
 			isa = "PBXGroup";
 			children = (
+				"87BCD80269C754D2562E2AB0",
+				"669D7AD5913F31F043482CA8",
+				"157DF73871E7D24C51080397",
+				"5D6119936A40D6086B446D44",
+				"9F4CFA72561A60FFFAB3D650",
 				"9AD9E0614A3B1F1CA9CC294D",
-				"E08A53D9FE16948F38934336",
-				"406C323F416C3713069780E3",
 				"E19F5C27BC4C72836CA135C8",
 				"073D4FDE6390CA09C7A83B71",
 				"4E795419B421AD9F1FD4BECB",
@@ -560,6 +541,76 @@
 				"B0610803C5CF9B84FAEEEAE7",
 				"8B10BC20DA8EDEBDE239437C",
 			);
+		};
+		9F4CFA72561A60FFFAB3D650 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/RoomDashboardView.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		AE5DCDC2E3A6557BAC4E9E89 = {
+			isa = "PBXBuildFile";
+			fileRef = "9F4CFA72561A60FFFAB3D650";
+		};
+		119AE6D7ED0745D04F3E0165 = {
+			isa = "PBXBuildFile";
+			fileRef = "9F4CFA72561A60FFFAB3D650";
+		};
+		5D6119936A40D6086B446D44 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/RoomStore.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		327A8F3D357963F4FBE3D320 = {
+			isa = "PBXBuildFile";
+			fileRef = "5D6119936A40D6086B446D44";
+		};
+		A3D45B36B8235843B9214E85 = {
+			isa = "PBXBuildFile";
+			fileRef = "5D6119936A40D6086B446D44";
+		};
+		157DF73871E7D24C51080397 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/SaverSettings.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		226C4CF39BFB598A8009B8F7 = {
+			isa = "PBXBuildFile";
+			fileRef = "157DF73871E7D24C51080397";
+		};
+		EB639D9FED1165E85DE24961 = {
+			isa = "PBXBuildFile";
+			fileRef = "157DF73871E7D24C51080397";
+		};
+		669D7AD5913F31F043482CA8 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/SettingsView.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		A1B4EBBDDDE81A0BDAC6DD5C = {
+			isa = "PBXBuildFile";
+			fileRef = "669D7AD5913F31F043482CA8";
+		};
+		BAE3A275AEF069C99FFBD123 = {
+			isa = "PBXBuildFile";
+			fileRef = "669D7AD5913F31F043482CA8";
+		};
+		87BCD80269C754D2562E2AB0 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "sourcecode.swift";
+			path = "Sources/SwitchBotClient.swift";
+			sourceTree = "SOURCE_ROOT";
+		};
+		A6B8241976DADB8F56B0093E = {
+			isa = "PBXBuildFile";
+			fileRef = "87BCD80269C754D2562E2AB0";
+		};
+		5506315EC4B4A5602DCFE22E = {
+			isa = "PBXBuildFile";
+			fileRef = "87BCD80269C754D2562E2AB0";
 		};
 	};
 	rootObject = "244210E48437B6556980A702";
