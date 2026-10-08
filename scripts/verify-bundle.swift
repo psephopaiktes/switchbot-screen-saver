@@ -5,6 +5,7 @@ import ScreenSaver
 struct VerifyBundle {
     @MainActor
     static func main() throws {
+        _ = NSApplication.shared
         guard CommandLine.arguments.count == 2,
               let bundle = Bundle(path: CommandLine.arguments[1]) else {
             throw CheckError.invalidBundle

@@ -26,9 +26,10 @@ final class RoomStore: ObservableObject {
         self.credentials = credentials
         self.client = client
         self.interval = interval
-        settings = repository.load()
-        reading = settings.demo ? .sample : nil
-        message = settings.demo ? "サンプルデータ" : "設定から機器を選択してください"
+        let initial = repository.load()
+        settings = initial
+        reading = initial.demo ? .sample : nil
+        message = initial.demo ? "サンプルデータ" : "設定から機器を選択してください"
     }
 
     func activate(_ owner: UUID) {

@@ -12,13 +12,13 @@ final class SettingsModel: ObservableObject {
     private let repository: SettingsRepository
     private let credentials: CredentialsStoring
     private let client: SwitchBotServing
-    private let onSave: () -> Void
+    private let onSave: @MainActor () -> Void
     private var task: Task<Void, Never>?
 
     init(repository: SettingsRepository = SettingsRepository(),
          credentials: CredentialsStoring = KeychainCredentials(),
          client: SwitchBotServing = SwitchBotClient(),
-         onSave: @escaping () -> Void = { RoomStore.shared.reload() }) {
+         onSave: @escaping @MainActor () -> Void = { RoomStore.shared.reload() }) {
         self.repository = repository
         self.credentials = credentials
         self.client = client
