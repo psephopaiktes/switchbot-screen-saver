@@ -1,23 +1,35 @@
 # SwitchBot Screen Saver
 
-黒背景に時計・温度・湿度・日付を表示するmacOSスクリーンセーバー。DIN系フォントとSF Symbolsを使った横並びのデザインです。
+[English](README.md) | [日本語](README.ja.md)
 
-## 使い方
+![OGP](OGP.png)
 
-1. [配布ZIP](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37744711757/artifacts/11535228670)をダウンロードして展開（成果物内のZIPも展開）し、`.saver`をダブルクリック。「このユーザのみ」にインストールします。
-2. システム設定のスクリーンセーバーで選択します。警告で開けない場合は「完了」で閉じます。
-3. 警告が出た場合は、**システム設定 → プライバシーとセキュリティ**の下部で、この`.saver`の**「このまま開く」**を押し、OSの確認に従います。このリポジトリから取得したファイルに対して操作してください。
-4. システム設定を⌘Qで終了して開き直し、スクリーンセーバーを選択 →「オプション」。
-5. 初回は「SwitchBot」タブでサンプル表示をオフ → Token・Secretを入力 → 機器を取得・選択 →「保存して表示に反映」。更新時は保存済みの設定を引き継ぎます。
+A free macOS screen saver with a clock, date, and temperature and humidity from your SwitchBot device.
 
-「表示」タブで4項目を個別にオン／オフ。時計は12／24時間、日付はMacの地域設定に合わせ、曜日は英語の略称で表示します。日付のスラッシュ前後にはスペースを入れます。
+## Download and install
 
-認証情報はKeychainに保存。5分ごとに更新します。サンプル表示なら認証情報は不要です。
+1. Download **SwitchBotScreenSaver-macos.zip** from [Releases](https://github.com/psephopaiktes/switchbot-screen-saver/releases), extract it, and double-click **SwitchBotScreenSaver.saver**. Choose **Install for this user only**.
+2. Select **SwitchBot Screen Saver** in your Mac's screen saver settings. If macOS says Apple cannot verify it, click **Done**, then go to **System Settings → Privacy & Security → Open Anyway** for this screen saver and follow the prompts.
+3. Quit System Settings with **⌘Q**, reopen it, and select the screen saver → **Options**.
 
-無料配布です。Developer ID署名・Appleの公証は行わないため、初回や更新時に上記の許可が必要になることがあります。セキュリティ機能全体を無効にする必要はありません。[インストールと更新](docs/INSTALL.md)
+This download is not notarized by Apple. You may need to allow it again after an update. There is no need to disable macOS security globally.
 
-## 開発
+## Connect SwitchBot
 
-`SwitchBotScreenSaver.xcodeproj`を開き、`SwitchBotSaverPreview`を実行。配布用ZIPはMacで`./scripts/package.sh`を実行して作成します。CIにもビルド済みZIPを保存します。
+To get your **Open Token** and **Secret** in the latest SwitchBot mobile app:
 
-[Macでの検証](docs/MACOS_VALIDATION.md) · [仕様・進捗](SPEC.md) · [開発指示](AGENTS.md)
+1. Sign in and open **Profile → Preferences → About**.
+2. Tap **App Version** **10 times** to reveal **Developer Options**.
+3. Open **Developer Options → Get Token** and copy both **Token** and **Secret**.
+
+In the screen saver's **Options → SwitchBot** tab, turn off sample data (`サンプルデータで表示`), enter your **Open Token** and **Secret**, then click **Fetch devices** (`接続して機器を取得`). Select your device and click **Save** (`保存して表示に反映`). Your device must support temperature/humidity readings through the SwitchBot cloud API.
+
+Credentials are stored in your Mac's Keychain. Do not share them. Readings update every five minutes. Sample mode and clock/date-only displays do not require credentials.
+
+The app's menu names may vary by version. See the [official SwitchBot guide](https://github.com/OpenWonderLabs/SwitchBotAPI#getting-started).
+
+## Customize
+
+In **Options → Display** (`表示`), toggle the clock, temperature, humidity, and date individually, and choose a 12- or 24-hour clock. Dates follow your Mac's region settings; weekdays use English abbreviations.
+
+To update, quit System Settings and the screen saver, then install the new `.saver` over the existing one. Your saved settings are kept.

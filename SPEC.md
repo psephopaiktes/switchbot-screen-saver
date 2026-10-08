@@ -22,10 +22,10 @@
 
 - Xcodeプロジェクトに`.saver`、プレビューアプリ、XCTestの3ターゲット。
 - deployment targetは検証用macOS 13、Swift 5言語モード。製品の最低対応OSは未確定。
-- `scripts/package.sh`でReleaseのarm64 / x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成を確認してZIPを作る。ZIPには`.saver`と短いインストール案内を同梱する。
-- macOS 15、26、27（`xcode-27`イメージ）のCIでパッケージとXCTestを検証し、ZIPを成果物として保存する。一般公開リリースはまだ作成しない。
+- `scripts/package.sh`でReleaseのarm64 / x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成を確認してZIPを作る。ZIPには`.saver`と日本語・英語のインストール案内を同梱する。
+- macOS 15、26、27（`xcode-27`イメージ）のCIでパッケージとXCTestを検証する。`vX.Y.Z`タグのpushで既存CIを呼び出し、全環境が成功したらZIPをGitHub Releaseへ添付する。ダウンロード先は固定のReleasesページ。README.mdは英語、README.ja.mdは日本語で初見ユーザー向けの説明に絞る。OGP.pngはユーザーが後で追加する。
 - 無料ダウンロード配布とし、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない。ad-hoc署名の配布物をOSの「このまま開く」で個別に許可する手順をREADMEに記載する。公開範囲・ライセンス・App Store配布は未決定。更新後の許可操作とKeychainアクセスは実機で確認する。
-- [インストール](docs/INSTALL.md) / [Macでの検証](docs/MACOS_VALIDATION.md)。
+- [インストール](docs/INSTALL.md) / [Macでの検証](docs/MACOS_VALIDATION.md) / [リリース手順](docs/RELEASING.md)。
 
 ## 確認済みの進捗
 
@@ -57,6 +57,8 @@
 - 2026-10-08: ユーザーの具体的なデザイン指摘に対応し、0.3.1（build 7）でSF Symbolの上下中央揃え、日付のスラッシュ前後の空白、最終取得時刻の非表示を実装。OSの地域ごとの日付順と英語の曜日は維持する。Figmaの寸法等は引き続き未取得で、今回の修正はユーザーの明示した要件に基づく。
 
 - 2026-10-08: 0.3.1、ソース`ff28cc6`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37744711757)でmacOS 15 / 26 / 27のビルド・署名検証・バンドル読み込み・ZIP生成と各17テスト（失敗0）が成功。日本・米国のスラッシュ前後の空白と、ドイツの区切りを維持することを確認。macOS 27のネイティブ描画画像でアイコンの上下中央揃え、空白付きの日付、モック通信で取得成功後に最終取得表示がないことを確認。ユーザーのMacでの表示は再確認待ち。
+
+- 2026-10-08: ユーザーの公開準備依頼に基づき、英語READMEと日本語READMEを初見ユーザー向けに整理。固定のReleasesページへ誘導し、SwitchBot公式手順に基づくアプリv9以降のProfile → Preferences → About、バージョン10回タップ、Developer Options → Get Tokenを記載。タグごとのビルド・検証・ReleaseへのZIP添付を整備。リポジトリの公開設定は変更しない。
 
 ## 次の確認と未解決事項
 
