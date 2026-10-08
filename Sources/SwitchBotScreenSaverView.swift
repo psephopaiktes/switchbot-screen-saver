@@ -27,7 +27,7 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
     }
 
     private func installContent() {
-        SettingsDiagnostics.log.info("Screen saver view initialized (0.3.1)")
+        SettingsDiagnostics.log.info("Screen saver view initialized (0.3.2)")
         animationTimeInterval = 1
         let content = NSHostingView(rootView: RoomDashboardView(store: store))
         content.frame = bounds
@@ -57,12 +57,12 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
     }
 
     override var hasConfigureSheet: Bool {
-        SettingsDiagnostics.log.info("Options availability checked (0.3.1)")
+        SettingsDiagnostics.log.info("Options availability checked (0.3.2)")
         return true
     }
 
     override var configureSheet: NSWindow? {
-        SettingsDiagnostics.log.info("configureSheet requested (0.3.1)")
+        SettingsDiagnostics.log.info("configureSheet requested (0.3.2)")
         // ホストが複数回参照しても同じウィンドウを返す。
         return settingsController.window
     }

@@ -5,6 +5,26 @@
 	};
 	objectVersion = "56";
 	objects = {
+		D964BD22635840708C283CED = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "image.png";
+			path = "Resources/thumbnail.png";
+			sourceTree = "SOURCE_ROOT";
+		};
+		55641245C6994D498DDA2C93 = {
+			isa = "PBXFileReference";
+			lastKnownFileType = "image.png";
+			path = "Resources/thumbnail@2x.png";
+			sourceTree = "SOURCE_ROOT";
+		};
+		6E4A8582AD4D49CC8A41CA07 = {
+			isa = "PBXBuildFile";
+			fileRef = "D964BD22635840708C283CED";
+		};
+		87774816060B458DACD7BDFD = {
+			isa = "PBXBuildFile";
+			fileRef = "55641245C6994D498DDA2C93";
+		};
 		9AD9E0614A3B1F1CA9CC294D = {
 			isa = "PBXFileReference";
 			lastKnownFileType = "sourcecode.swift";
@@ -111,6 +131,8 @@
 			isa = "PBXResourcesBuildPhase";
 			buildActionMask = "2147483647";
 			files = (
+				"6E4A8582AD4D49CC8A41CA07",
+				"87774816060B458DACD7BDFD",
 			);
 			runOnlyForDeploymentPostprocessing = "0";
 		};
@@ -122,7 +144,7 @@
 				SWIFT_VERSION = "5.0";
 				CODE_SIGN_STYLE = "Manual";
 				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = "YES";
+				COMBINE_HIDPI_IMAGES = "NO";
 				INFOPLIST_FILE = "Resources/ScreenSaver-Info.plist";
 				GENERATE_INFOPLIST_FILE = "NO";
 				WRAPPER_EXTENSION = "saver";
@@ -140,7 +162,7 @@
 				SWIFT_VERSION = "5.0";
 				CODE_SIGN_STYLE = "Manual";
 				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = "YES";
+				COMBINE_HIDPI_IMAGES = "NO";
 				INFOPLIST_FILE = "Resources/ScreenSaver-Info.plist";
 				GENERATE_INFOPLIST_FILE = "NO";
 				WRAPPER_EXTENSION = "saver";
@@ -456,6 +478,8 @@
 				"073D4FDE6390CA09C7A83B71",
 				"4E795419B421AD9F1FD4BECB",
 				"2397125C2208D51AB51A52D3",
+				"D964BD22635840708C283CED",
+				"55641245C6994D498DDA2C93",
 				"E2AA269EB967A8853A258BFA",
 				"0A3E27B8CA818264D75C8D81",
 			);

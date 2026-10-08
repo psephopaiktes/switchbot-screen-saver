@@ -8,6 +8,6 @@
 | 同上・Retina | `Resources/thumbnail@2x.png` | 360 × 232 px（同じ絵柄を2倍サイズで書き出し） |
 | READMEの画像 | `OGP.png` | 任意 |
 
-サムネイルは背景を黒、透明なし、角丸なしで用意します。サイズは制作時の推奨値であり、OSの固定要件とは扱いません。OS側で拡縮されるため、macOS 27の実際の一覧表示で確認します。サムネイル2枚は受領後にXcodeのCopy Bundle Resourcesへ登録し、`.saver/Contents/Resources/`へ同梱します。OGPはREADMEで参照し、スクリーンセーバーバンドルには入れません。
+サムネイルは背景を黒、透明なし、角丸なしで用意します。サイズは制作時の推奨値であり、OSの固定要件とは扱いません。OS側で拡縮されるため、macOS 27の実際の一覧表示で確認します。受領したサムネイル2枚はXcodeのCopy Bundle Resourcesへ登録済みで、`.saver/Contents/Resources/`へ同梱します。XcodeのCOMBINE_HIDPI_IMAGESはNOとし、PNGをTIFFへ結合せずファイル名を維持します。OGPはREADMEで参照し、スクリーンセーバーバンドルには入れません。
 
 画像をmainへ置いた場合は、開発ブランチへ変更を取り込み、Xcodeへの登録と配布物の確認を行います。公開済みのReleaseは上書きせず、画像を含む次のバージョンで配布します。
