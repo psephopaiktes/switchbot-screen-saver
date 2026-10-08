@@ -32,6 +32,8 @@
 - 2026-10-08: ユーザーの希望に合わせて時計を削除し、温湿度デザイン、選択式Liquid Glass、設定・Keychain・API連携、試用ZIP生成と短いREADMEを追加。今回の変更は自動検証と実機確認の結果を分けて記録する。
 - 2026-10-08: ユーザー提供のMacビルドログとCIで、設定保存コールバックのMainActor隔離エラーを確認し、コールバックの型を`@MainActor`に修正。
 - 2026-10-08: ソース`35c4b2a`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37720647396)でmacOS 15 / Xcode 16.4とmacOS 26 / Xcode 26.6の両方が成功。各環境でReleaseのarm64 / x86_64ビルド、署名検証、別プロセスのバンドル読み込み、XCTest 8件（失敗0）、試用ZIPの生成を確認。実測通信と実際のOSホストからのKeychainアクセスは未検証。
+- 2026-10-08: ユーザーから「オプションを押しても何も起きない」との報告を受領。設定シートを参照するたびに作成していた処理を、NSWindowControllerで保持する同一のNSPanelに変更。NSHostingControllerと固定サイズを使い、表示後にKeychainを読むよう変更。プレビュー側でウィンドウ接続前に表示要求を消費しないよう修正。0.2.1（build 3）として更新。
+- 2026-10-08: ソース`9296227`の[CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37721513781)でmacOS 15 / 26のビルド・ZIP生成と各9テスト（失敗0）が成功。同じシートを返すこと、実際のNSWindowへのシート表示・終了・再表示を確認。ユーザーのシステム設定ホストでの症状解消は再確認待ち。
 
 ## 次の確認と未解決事項
 
