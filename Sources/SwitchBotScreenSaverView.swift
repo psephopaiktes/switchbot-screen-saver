@@ -61,8 +61,9 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
 }
 
 @MainActor
-final class SettingsSheetController: NSWindowController {
+final class SettingsSheetController: NSWindowController, NSWindowDelegate {
     private let model: SettingsModel
+    private var needsCredentialLoad = true
 
     init(model: SettingsModel? = nil) {
         self.model = model ?? SettingsModel()
@@ -72,6 +73,7 @@ final class SettingsSheetController: NSWindowController {
         panel.isReleasedWhenClosed = false
         panel.hidesOnDeactivate = false
         super.init(window: panel)
+        panel.delegate = self
         panel.contentViewController = NSHostingController(rootView: SettingsView(model: self.model) { [weak self] in
             self?.dismiss()
         })
@@ -81,6 +83,13 @@ final class SettingsSheetController: NSWindowController {
 
     required init?(coder: NSCoder) { nil }
 
+    func windowDidBecomeKey(_ notification: Notification) {
+        guard needsCredentialLoad else { return }
+        needsCredentialLoad = false
+        // Keychainの許可UIを、設定ウィンドウが表示される前に出さない。
+        model.loadCredentials()
+    }
+
     func present(on parent: NSWindow) {
         guard let sheet = window, parent.attachedSheet == nil, sheet.sheetParent == nil else { return }
         parent.beginSheet(sheet)
@@ -88,6 +97,7 @@ final class SettingsSheetController: NSWindowController {
 
     func dismiss() {
         model.cancel()
+        needsCredentialLoad = true
         guard let sheet = window else { return }
         sheet.sheetParent?.endSheet(sheet)
         sheet.orderOut(nil)

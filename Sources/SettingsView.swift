@@ -174,7 +174,6 @@ struct SettingsView: View {
         }
         .padding(28)
         .frame(width: 576, height: 560)
-        .onAppear { model.loadCredentials() }
         .onDisappear { model.cancel() }
         .confirmationDialog("Keychainの認証情報を削除しますか？", isPresented: $confirmDeletion) {
             Button("削除", role: .destructive) { model.forgetCredentials() }
