@@ -129,7 +129,7 @@ final class SettingsSheetController: NSWindowController, NSWindowDelegate {
             NSApp.stopModal(withCode: returnCode)
         } else {
             // リモート設定ホストではsheetParentを取得できない場合がある。
-            NSApp.endSheet(sheet, returnCode: returnCode)
+            NSApp.endSheet(sheet, returnCode: returnCode.rawValue)
         }
         sheet.orderOut(nil)
         SettingsDiagnostics.log.info("Settings panel dismissed")
