@@ -54,7 +54,9 @@ final class SettingsModel: ObservableObject {
         !busy && !enteredCredentials.token.isEmpty && !enteredCredentials.secret.isEmpty
     }
 
-    var canSave: Bool { !busy && (settings.demo || (canConnect && !settings.deviceID.isEmpty)) }
+    var canSave: Bool {
+        !busy && (settings.demo || !settings.showsMeasurements || (canConnect && !settings.deviceID.isEmpty))
+    }
 
     func connect() {
         guard canConnect else { return }
@@ -86,7 +88,7 @@ final class SettingsModel: ObservableObject {
         task = Task {
             defer { busy = false }
             do {
-                if !candidate.demo {
+                if !candidate.demo && candidate.showsMeasurements {
                     _ = try await client.reading(deviceID: candidate.deviceID, credentials: entered)
                     try Task.checkCancellation()
                     try credentials.save(entered)
@@ -133,24 +135,50 @@ struct SettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("SwitchBot Screen Saver").font(.title2.weight(.semibold))
-            Form {
-                Toggle("サンプルデータで表示", isOn: $model.settings.demo)
-                if !model.settings.demo {
-                    SecureField("Open Token", text: $model.token)
-                    SecureField("Secret", text: $model.secret)
-                    Text("認証情報はこのMacのKeychainに保存します。")
-                        .font(.caption).foregroundStyle(.secondary)
-                    Button("接続して機器を取得") { model.connect() }
-                        .disabled(!model.canConnect)
-                    Picker("表示する機器", selection: $model.settings.deviceID) {
-                        Text("選択してください").tag("")
-                        ForEach(model.devices) { device in
-                            Text(device.deviceName).tag(device.id)
+            TabView {
+                Form {
+                    Section("表示項目") {
+                        Toggle("時計", isOn: $model.settings.showClock)
+                        Toggle("温度", isOn: $model.settings.showTemperature)
+                        Toggle("湿度", isOn: $model.settings.showHumidity)
+                        Toggle("日付", isOn: $model.settings.showDate)
+                    }
+                    Section("時計・日付") {
+                        Picker("時計の形式", selection: $model.settings.clockFormat) {
+                            ForEach(ClockFormat.allCases) { format in
+                                Text(format.title).tag(format)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .disabled(!model.settings.showClock)
+                        Text("日付はMacの地域・カレンダー設定に従います。曜日は英語の略称です。")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+                .tabItem { Text("表示") }
+
+                Form {
+                    Toggle("サンプルデータで表示", isOn: $model.settings.demo)
+                    if !model.settings.showsMeasurements {
+                        Text("時計・日付のみの表示には認証情報は不要です。")
+                            .font(.caption).foregroundStyle(.secondary)
+                    } else if !model.settings.demo {
+                        SecureField("Open Token", text: $model.token)
+                        SecureField("Secret", text: $model.secret)
+                        Text("認証情報はこのMacのKeychainに保存します。")
+                            .font(.caption).foregroundStyle(.secondary)
+                        Button("接続して機器を取得") { model.connect() }
+                            .disabled(!model.canConnect)
+                        Picker("表示する機器", selection: $model.settings.deviceID) {
+                            Text("選択してください").tag("")
+                            ForEach(model.devices) { device in
+                                Text(device.deviceName).tag(device.id)
+                            }
                         }
                     }
                 }
-                Text("機器を選んだら「保存して表示に反映」を押してください。")
-                    .font(.caption).foregroundStyle(.secondary)
+                .tabItem { Text("SwitchBot") }
             }
             .formStyle(.grouped)
             .disabled(model.busy)

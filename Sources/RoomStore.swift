@@ -99,6 +99,13 @@ final class RoomStore: ObservableObject {
             updatedAt = nil
             stale = false
         }
+        guard settings.showsMeasurements else {
+            reading = nil
+            updatedAt = nil
+            stale = false
+            message = ""
+            return
+        }
         if settings.demo {
             reading = .sample
             updatedAt = nil

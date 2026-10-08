@@ -165,6 +165,100 @@ final class ScreenSaverTests: XCTestCase {
     }
 
     @MainActor
+    func testDisplayPreferencesMigrateAndPreserveIndependentOffStates() {
+        let (repository, defaults) = repository()
+        defaults.set(false, forKey: "demo")
+        defaults.set("fixture-hub", forKey: "deviceID")
+        let migrated = repository.load()
+        XCTAssertTrue(migrated.showClock && migrated.showTemperature && migrated.showHumidity && migrated.showDate)
+        XCTAssertEqual(migrated.clockFormat, .twentyFourHour)
+        XCTAssertFalse(migrated.demo)
+        var selected = migrated
+        selected.showClock = false
+        selected.showHumidity = false
+        selected.clockFormat = .twelveHour
+        repository.save(selected)
+        XCTAssertEqual(repository.load(), selected)
+        selected.showTemperature = false
+        selected.showDate = false
+        repository.save(selected)
+        XCTAssertEqual(repository.load(), selected)
+        XCTAssertFalse(repository.load().showsMainRow)
+        XCTAssertFalse(repository.load().showDate)
+    }
+
+    func testClockFormatsAndLocalizedDatesUseTheSameLocalDay() throws {
+        let instant = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-09-15T20:04:00Z"))
+        let utc = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let tokyo = try XCTUnwrap(TimeZone(identifier: "Asia/Tokyo"))
+        let calendar = Calendar(identifier: .gregorian)
+        let full = DashboardFormatting.clock(instant, format: .twentyFourHour, timeZone: utc)
+        XCTAssertEqual(full.time, "20:04")
+        XCTAssertNil(full.period)
+        let half = DashboardFormatting.clock(instant, format: .twelveHour, timeZone: utc)
+        XCTAssertEqual(half.time, "08:04")
+        XCTAssertEqual(half.period, "PM")
+        XCTAssertEqual(DashboardFormatting.date(instant, locale: Locale(identifier: "en_US"),
+                                                calendar: calendar, timeZone: utc), "9/15/2026 Tue")
+        XCTAssertEqual(DashboardFormatting.date(instant, locale: Locale(identifier: "de_DE"),
+                                                calendar: calendar, timeZone: utc), "15.9.2026 Tue")
+        XCTAssertEqual(DashboardFormatting.date(instant, locale: Locale(identifier: "ja_JP"),
+                                                calendar: calendar, timeZone: tokyo), "2026/9/16 Wed")
+        XCTAssertEqual(DashboardFormatting.clock(instant, format: .twelveHour, timeZone: tokyo).period, "AM")
+        let midnight = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-09-16T00:00:00Z"))
+        XCTAssertEqual(DashboardFormatting.clock(midnight, format: .twentyFourHour, timeZone: utc).time, "00:00")
+        XCTAssertEqual(DashboardFormatting.clock(midnight, format: .twelveHour, timeZone: utc).time, "12:00")
+    }
+
+    @MainActor
+    func testClockOnlySettingsSaveWithoutCredentialsOrAPIRequests() async throws {
+        let (repository, _) = repository()
+        let vault = MemoryCredentials(nil)
+        let client = SequenceClient()
+        let model = SettingsModel(repository: repository, credentials: vault, client: client, onSave: {})
+        model.settings.demo = false
+        model.settings.showTemperature = false
+        model.settings.showHumidity = false
+        XCTAssertTrue(model.canSave)
+        let saved = expectation(description: "時計・日付のみを保存")
+        model.save { saved.fulfill() }
+        await fulfillment(of: [saved], timeout: 2)
+        XCTAssertFalse(repository.load().showsMeasurements)
+        XCTAssertNil(vault.saved)
+        let store = RoomStore(repository: repository, credentials: vault, client: client)
+        let owner = UUID()
+        store.activate(owner)
+        defer { store.deactivate(owner) }
+        XCTAssertNil(store.reading)
+        XCTAssertTrue(store.message.isEmpty)
+        let calls = await client.calls
+        XCTAssertEqual(calls, 0)
+    }
+
+    @MainActor
+    func testTurningOffBothMeasurementsStopsActivePolling() async throws {
+        let (repository, _) = repository()
+        var settings = SaverSettings(demo: false, deviceID: "fixture-hub")
+        repository.save(settings)
+        let client = SequenceClient()
+        let store = RoomStore(repository: repository, credentials: MemoryCredentials(fixture),
+                              client: client, interval: 30_000_000)
+        let owner = UUID()
+        store.activate(owner)
+        defer { store.deactivate(owner) }
+        try await waitUntil { store.updatedAt != nil }
+        settings.showTemperature = false
+        settings.showHumidity = false
+        repository.save(settings)
+        store.refreshSettingsIfNeeded(force: true)
+        XCTAssertNil(store.reading)
+        let before = await client.calls
+        try await Task.sleep(nanoseconds: 90_000_000)
+        let after = await client.calls
+        XCTAssertEqual(after, before)
+    }
+
+    @MainActor
     func testSaveInAnotherSettingsInstanceChangesAnActiveSampleViewToLive() async throws {
         let name = "saver-tests.\(UUID().uuidString)"
         addTeardownBlock { UserDefaults.standard.removePersistentDomain(forName: name) }

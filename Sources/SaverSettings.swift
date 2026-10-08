@@ -2,10 +2,24 @@ import Foundation
 import ScreenSaver
 import Security
 
+enum ClockFormat: String, CaseIterable, Identifiable {
+    case twentyFourHour, twelveHour
+    var id: String { rawValue }
+    var title: String { self == .twentyFourHour ? "24時間" : "12時間" }
+}
+
 struct SaverSettings: Equatable {
     var demo = true
     var deviceID = ""
     var deviceName = ""
+    var showClock = true
+    var showTemperature = true
+    var showHumidity = true
+    var showDate = true
+    var clockFormat: ClockFormat = .twentyFourHour
+
+    var showsMeasurements: Bool { showTemperature || showHumidity }
+    var showsMainRow: Bool { showClock || showsMeasurements }
 }
 
 final class SettingsRepository {
@@ -21,8 +35,17 @@ final class SettingsRepository {
         SaverSettings(
             demo: defaults.object(forKey: "demo") == nil ? true : defaults.bool(forKey: "demo"),
             deviceID: defaults.string(forKey: "deviceID") ?? "",
-            deviceName: defaults.string(forKey: "deviceName") ?? ""
+            deviceName: defaults.string(forKey: "deviceName") ?? "",
+            showClock: enabled("showClock"),
+            showTemperature: enabled("showTemperature"),
+            showHumidity: enabled("showHumidity"),
+            showDate: enabled("showDate"),
+            clockFormat: ClockFormat(rawValue: defaults.string(forKey: "clockFormat") ?? "") ?? .twentyFourHour
         )
+    }
+
+    private func enabled(_ key: String) -> Bool {
+        defaults.object(forKey: key) == nil ? true : defaults.bool(forKey: key)
     }
 
     func synchronize() { defaults.synchronize() }
@@ -34,6 +57,11 @@ final class SettingsRepository {
         defaults.set(settings.demo, forKey: "demo")
         defaults.set(settings.deviceID, forKey: "deviceID")
         defaults.set(settings.deviceName, forKey: "deviceName")
+        defaults.set(settings.showClock, forKey: "showClock")
+        defaults.set(settings.showTemperature, forKey: "showTemperature")
+        defaults.set(settings.showHumidity, forKey: "showHumidity")
+        defaults.set(settings.showDate, forKey: "showDate")
+        defaults.set(settings.clockFormat.rawValue, forKey: "clockFormat")
         // 同じ機器のまま認証情報だけ変更した場合も表示側を更新する。
         defaults.set(UUID().uuidString, forKey: "revision")
         defaults.synchronize()
