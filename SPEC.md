@@ -24,7 +24,7 @@
 - deployment targetは検証用macOS 13、Swift 5言語モード。製品の最低対応OSは未確定。
 - `scripts/package.sh`でReleaseのarm64 / x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成を確認してZIPを作る。ZIPには`.saver`と日本語・英語のインストール案内を同梱する。
 - macOS 15、26、27（`xcode-27`イメージ）のCIでパッケージとXCTestを検証する。`vX.Y.Z`タグのpushで既存CIを呼び出し、全環境が成功したらZIPをGitHub Releaseへ添付する。ダウンロード先は固定のReleasesページ。README.mdは英語、README.ja.mdは日本語で初見ユーザー向けの説明に絞る。OGP.pngと一覧サムネイルはユーザー提供のPNGを使用する。
-- 無料ダウンロード配布とし、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない。ad-hoc署名の配布物をOSの「このまま開く」で個別に許可する手順をREADMEに記載する。GitHubリポジトリとReleaseはPublicで無料配布する。ライセンス・App Store配布は未決定。更新後の許可操作とKeychainアクセスは実機で確認する。
+- 無料ダウンロード配布とし、有料Apple Developer Programへの加入・Developer ID署名・公証は行わない。ad-hoc署名の配布物をOSの「このまま開く」で個別に許可する手順をREADMEに記載する。GitHubリポジトリとReleaseをPublicで無料配布する方針。公開設定の変更は連携の管理権限不足（HTTP 403）で未完了。ライセンス・App Store配布は未決定。更新後の許可操作とKeychainアクセスは実機で確認する。
 - [インストール](docs/INSTALL.md) / [Macでの検証](docs/MACOS_VALIDATION.md) / [リリース手順](docs/RELEASING.md)。
 
 ## 確認済みの進捗
