@@ -241,14 +241,17 @@ final class ScreenSaverTests: XCTestCase {
         let controller = SettingsSheetController(model: model)
         let panel = try XCTUnwrap(controller.window)
         for _ in 0..<2 {
-            let watchdog = DispatchWorkItem { NSApp.abortModal() }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: watchdog)
-            DispatchQueue.main.async {
+            // runModalのネストしたループ内で実行する。main queueは再入不可。
+            let watchdog = Timer(timeInterval: 2, repeats: false) { _ in NSApp.abortModal() }
+            let dismissTimer = Timer(timeInterval: 0.02, repeats: false) { _ in
                 XCTAssertTrue(NSApp.modalWindow === panel)
                 controller.dismiss(returnCode: .OK)
             }
+            RunLoop.main.add(watchdog, forMode: .modalPanel)
+            RunLoop.main.add(dismissTimer, forMode: .modalPanel)
             let result = NSApp.runModal(for: panel)
-            watchdog.cancel()
+            watchdog.invalidate()
+            dismissTimer.invalidate()
             XCTAssertEqual(result, .OK, "非表示にするだけでモーダル処理を残さない")
             XCTAssertFalse(panel.isVisible)
         }
