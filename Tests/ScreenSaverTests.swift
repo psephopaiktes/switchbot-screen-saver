@@ -165,6 +165,96 @@ final class ScreenSaverTests: XCTestCase {
     }
 
     @MainActor
+    func testSaveInAnotherSettingsInstanceChangesAnActiveSampleViewToLive() async throws {
+        let name = "saver-tests.\(UUID().uuidString)"
+        addTeardownBlock { UserDefaults.standard.removePersistentDomain(forName: name) }
+        let reader = SettingsRepository(defaults: UserDefaults(suiteName: name)!)
+        let writer = SettingsRepository(defaults: UserDefaults(suiteName: name)!)
+        let credentials = MemoryCredentials(nil)
+        let live = RoomReading(temperatureCelsius: 27.3, relativeHumidity: 61)
+        let displayClient = RecordingClient(value: live)
+        let store = RoomStore(repository: reader, credentials: credentials, client: displayClient)
+        let owner = UUID()
+        store.activate(owner)
+        defer { store.deactivate(owner) }
+        XCTAssertTrue(store.settings.demo)
+        XCTAssertEqual(store.reading, .sample)
+
+        let model = SettingsModel(repository: writer, credentials: credentials,
+                                  client: RecordingClient(value: live), onSave: {})
+        model.settings = SaverSettings(demo: false, deviceID: "fixture-hub")
+        model.token = fixture.token; model.secret = fixture.secret
+        let saved = expectation(description: "別の設定インスタンスで保存")
+        model.save { saved.fulfill() }
+        await fulfillment(of: [saved], timeout: 2)
+        // 表示モデルへの直接reload呼び出しはない。通知で切り替わることを確認。
+        try await waitUntil { !store.settings.demo && store.reading == live }
+        XCTAssertNotNil(store.updatedAt)
+        XCTAssertTrue(store.message.isEmpty)
+    }
+
+    @MainActor
+    func testOtherProcessPreferencesAreReadByFrameFallbackAndCredentialRevision() async throws {
+        let name = "saver-tests.\(UUID().uuidString)"
+        addTeardownBlock { UserDefaults.standard.removePersistentDomain(forName: name) }
+        let reader = SettingsRepository(defaults: UserDefaults(suiteName: name)!)
+        let credentials = MemoryCredentials(fixture)
+        let live = RoomReading(temperatureCelsius: 27.3, relativeHumidity: 61)
+        let client = RecordingClient(value: live)
+        let store = RoomStore(repository: reader, credentials: credentials, client: client)
+        let owner = UUID()
+        store.activate(owner)
+        defer { store.deactivate(owner) }
+
+        // 独立したdefaultsプロセスで書き込み、アプリ独自の通知を送らない。
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/defaults")
+        process.arguments = ["import", name, "-"]
+        let input = Pipe()
+        process.standardInput = input
+        let payload: [String: Any] = ["demo": false, "deviceID": "fixture-hub", "revision": UUID().uuidString]
+        let data = try PropertyListSerialization.data(fromPropertyList: payload, format: .xml, options: 0)
+        try process.run()
+        input.fileHandleForWriting.write(data)
+        try input.fileHandleForWriting.close()
+        process.waitUntilExit()
+        XCTAssertEqual(process.terminationStatus, 0)
+        store.refreshSettingsIfNeeded(force: true)
+        try await waitUntil { !store.settings.demo && store.reading == live }
+
+        // 機器が同じでも、認証情報を更新した保存はrevisionで再取得される。
+        let replacement = SwitchBotCredentials(token: "fixture-token-rotated", secret: "fixture-secret-rotated")
+        credentials.saved = replacement
+        let writer = SettingsRepository(defaults: UserDefaults(suiteName: name)!)
+        writer.save(SaverSettings(demo: false, deviceID: "fixture-hub"))
+        store.refreshSettingsIfNeeded(force: true)
+        try await waitUntil { store.updatedAt != nil }
+        let receivedToken = await client.lastToken
+        XCTAssertEqual(receivedToken, replacement.token)
+    }
+
+    @MainActor
+    func testModalSettingsSessionEndsAndCanReopen() async throws {
+        let (repository, _) = repository()
+        let model = SettingsModel(repository: repository, credentials: MemoryCredentials(nil),
+                                  client: SequenceClient(), onSave: {})
+        let controller = SettingsSheetController(model: model)
+        let panel = try XCTUnwrap(controller.window)
+        for _ in 0..<2 {
+            let watchdog = DispatchWorkItem { NSApp.abortModal() }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: watchdog)
+            DispatchQueue.main.async {
+                XCTAssertTrue(NSApp.modalWindow === panel)
+                controller.dismiss(returnCode: .OK)
+            }
+            let result = NSApp.runModal(for: panel)
+            watchdog.cancel()
+            XCTAssertEqual(result, .OK, "非表示にするだけでモーダル処理を残さない")
+            XCTAssertFalse(panel.isVisible)
+        }
+    }
+
+    @MainActor
     private func repository() -> (SettingsRepository, UserDefaults) {
         let name = "saver-tests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: name)!
@@ -197,5 +287,16 @@ private actor SequenceClient: SwitchBotServing {
         calls += 1
         if alwaysFail || calls > 1 { throw SwitchBotError.network }
         return .sample
+    }
+}
+
+private actor RecordingClient: SwitchBotServing {
+    let value: RoomReading
+    private(set) var lastToken: String?
+    init(value: RoomReading) { self.value = value }
+    func devices(credentials: SwitchBotCredentials) async throws -> [SwitchBotDevice] { [] }
+    func reading(deviceID: String, credentials: SwitchBotCredentials) async throws -> RoomReading {
+        lastToken = credentials.token
+        return value
     }
 }

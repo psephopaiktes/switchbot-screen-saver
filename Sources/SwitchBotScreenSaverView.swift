@@ -27,7 +27,7 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
     }
 
     private func installContent() {
-        SettingsDiagnostics.log.info("Screen saver view initialized (0.2.2)")
+        SettingsDiagnostics.log.info("Screen saver view initialized (0.2.3)")
         animationTimeInterval = 1
         let content = NSHostingView(rootView: RoomDashboardView(store: store))
         content.frame = bounds
@@ -46,18 +46,23 @@ final class SwitchBotScreenSaverView: ScreenSaverView {
         super.stopAnimation()
     }
 
+    override func animateOneFrame() {
+        guard isAnimating else { return }
+        store.refreshSettingsIfNeeded()
+    }
+
     override func viewWillMove(toWindow newWindow: NSWindow?) {
         if newWindow == nil { stopAnimation() }
         super.viewWillMove(toWindow: newWindow)
     }
 
     override var hasConfigureSheet: Bool {
-        SettingsDiagnostics.log.info("Options availability checked (0.2.2)")
+        SettingsDiagnostics.log.info("Options availability checked (0.2.3)")
         return true
     }
 
     override var configureSheet: NSWindow? {
-        SettingsDiagnostics.log.info("configureSheet requested (0.2.2)")
+        SettingsDiagnostics.log.info("configureSheet requested (0.2.3)")
         // ホストが複数回参照しても同じウィンドウを返す。
         return settingsController.window
     }
@@ -84,8 +89,8 @@ final class SettingsSheetController: NSWindowController, NSWindowDelegate {
         panel.hidesOnDeactivate = false
         super.init(window: panel)
         panel.delegate = self
-        panel.contentViewController = NSHostingController(rootView: SettingsView(model: self.model) { [weak self] in
-            self?.dismiss()
+        panel.contentViewController = NSHostingController(rootView: SettingsView(model: self.model) { [weak self] response in
+            self?.dismiss(returnCode: response)
         })
         // Formの推奨サイズに依存せず、表示可能な領域を確保する。
         panel.setContentSize(NSSize(width: 576, height: 560))
@@ -102,17 +107,30 @@ final class SettingsSheetController: NSWindowController, NSWindowDelegate {
         model.loadCredentials()
     }
 
+    func windowWillClose(_ notification: Notification) {
+        model.cancel()
+        needsCredentialLoad = true
+    }
+
     func present(on parent: NSWindow) {
         guard let sheet = window, parent.attachedSheet == nil, sheet.sheetParent == nil else { return }
         parent.beginSheet(sheet)
         SettingsDiagnostics.log.info("Settings panel presented by app")
     }
 
-    func dismiss() {
+    func dismiss(returnCode: NSApplication.ModalResponse = .cancel) {
         model.cancel()
         needsCredentialLoad = true
         guard let sheet = window else { return }
-        sheet.sheetParent?.endSheet(sheet)
+        if let parent = sheet.sheetParent {
+            parent.endSheet(sheet, returnCode: returnCode)
+        } else if NSApp.modalWindow === sheet {
+            // LegacyホストがrunModalで表示している場合もセッションを終了する。
+            NSApp.stopModal(withCode: returnCode)
+        } else {
+            // リモート設定ホストではsheetParentを取得できない場合がある。
+            NSApp.endSheet(sheet, returnCode: returnCode)
+        }
         sheet.orderOut(nil)
         SettingsDiagnostics.log.info("Settings panel dismissed")
     }

@@ -18,6 +18,9 @@ final class RoomStore: ObservableObject {
     private var owners: Set<UUID> = []
     private var task: Task<Void, Never>?
     private var generation = UUID()
+    private var observedRevision: String
+    private var settingsObserver: NSObjectProtocol?
+    private var lastSettingsCheck = Date.distantPast
 
     init(repository: SettingsRepository = SettingsRepository(),
          credentials: CredentialsStoring = KeychainCredentials(),
@@ -26,6 +29,8 @@ final class RoomStore: ObservableObject {
         self.credentials = credentials
         self.client = client
         self.interval = interval
+        repository.synchronize()
+        observedRevision = repository.revision
         let initial = repository.load()
         settings = initial
         reading = initial.demo ? .sample : nil
@@ -33,23 +38,51 @@ final class RoomStore: ObservableObject {
     }
 
     func activate(_ owner: UUID) {
+        if owners.isEmpty {
+            settingsObserver = DistributedNotificationCenter.default().addObserver(
+                forName: SettingsRepository.changedNotification, object: nil, queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor [weak self] in self?.refreshSettingsIfNeeded(force: true) }
+            }
+        }
         owners.insert(owner)
+        refreshSettingsIfNeeded(force: true)
         if task == nil { begin() }
     }
 
     func deactivate(_ owner: UUID) {
         owners.remove(owner)
-        if owners.isEmpty { cancel() }
+        if owners.isEmpty {
+            cancel()
+            if let settingsObserver {
+                DistributedNotificationCenter.default().removeObserver(settingsObserver)
+                self.settingsObserver = nil
+            }
+        }
     }
 
     func reload() {
         cancel()
+        repository.synchronize()
+        observedRevision = repository.revision
         settings = repository.load()
         reading = settings.demo ? .sample : nil
         updatedAt = nil
         stale = false
         message = settings.demo ? "サンプルデータ" : "接続中…"
         if !owners.isEmpty { begin() }
+    }
+
+    /// 通知が届かないホストでも、OSのフレーム通知で保存設定を確認する。
+    func refreshSettingsIfNeeded(force: Bool = false) {
+        guard !owners.isEmpty else { return }
+        let now = Date()
+        guard force || now.timeIntervalSince(lastSettingsCheck) >= 1 else { return }
+        lastSettingsCheck = now
+        repository.synchronize()
+        if repository.revision != observedRevision || repository.load() != settings {
+            reload()
+        }
     }
 
     private func cancel() {
@@ -87,6 +120,7 @@ final class RoomStore: ObservableObject {
             return
         }
         let deviceID = settings.deviceID
+        if reading == nil { message = "取得中…" }
         let current = generation
         task = Task { [weak self] in
             guard let self else { return }

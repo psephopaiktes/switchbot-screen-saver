@@ -38,7 +38,9 @@ struct NativeSaverPreview: NSViewRepresentable {
     let settingsRequest: Int
 
     func makeCoordinator() -> Coordinator {
-        Coordinator()
+        let coordinator = Coordinator()
+        coordinator.lastSettingsRequest = settingsRequest
+        return coordinator
     }
 
     func makeNSView(context: Context) -> SwitchBotScreenSaverView {

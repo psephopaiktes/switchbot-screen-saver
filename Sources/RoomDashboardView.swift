@@ -60,7 +60,7 @@ struct RoomDashboardView: View {
         .frame(width: 330 * scale, alignment: .leading)
         .padding(32 * scale)
         .foregroundStyle(.white)
-        .modifier(MetricSurface(style: store.settings.style, radius: 32 * scale))
+        .modifier(MetricSurface(radius: 32 * scale))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
         .accessibilityValue(value == "—" ? "未取得" : "\(value) \(unit)")
@@ -68,23 +68,8 @@ struct RoomDashboardView: View {
 }
 
 private struct MetricSurface: ViewModifier {
-    let style: DisplayStyle
     let radius: CGFloat
-
-    @ViewBuilder
     func body(content: Content) -> some View {
-        #if compiler(>=6.2)
-        if #available(macOS 26.0, *), style == .liquidGlass {
-            content.glassEffect(.regular, in: RoundedRectangle(cornerRadius: radius))
-        } else {
-            plain(content)
-        }
-        #else
-        plain(content)
-        #endif
-    }
-
-    private func plain(_ content: Content) -> some View {
         content
             .background(.white.opacity(0.035), in: RoundedRectangle(cornerRadius: radius))
             .overlay(RoundedRectangle(cornerRadius: radius).stroke(.white.opacity(0.08), lineWidth: 1))

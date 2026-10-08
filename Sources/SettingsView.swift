@@ -31,6 +31,12 @@ final class SettingsModel: ObservableObject {
     }
 
     func loadCredentials() {
+        repository.synchronize()
+        settings = repository.load()
+        devices = settings.deviceID.isEmpty ? [] : [SwitchBotDevice(
+            deviceId: settings.deviceID, deviceName: settings.deviceName, deviceType: ""
+        )]
+        message = ""
         do {
             if let saved = try credentials.load(interactive: true) {
                 token = saved.token
@@ -122,22 +128,12 @@ final class SettingsModel: ObservableObject {
 struct SettingsView: View {
     @StateObject var model = SettingsModel()
     @State private var confirmDeletion = false
-    let onClose: () -> Void
+    let onClose: (NSApplication.ModalResponse) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("SwitchBot Screen Saver").font(.title2.weight(.semibold))
             Form {
-                Picker("表示スタイル", selection: $model.settings.style) {
-                    Text("ミニマル").tag(DisplayStyle.plain)
-                    if DisplayStyle.glassAvailable {
-                        Text("Liquid Glass").tag(DisplayStyle.liquidGlass)
-                    }
-                }
-                if !DisplayStyle.glassAvailable {
-                    Text("Liquid GlassはmacOS 26以降で利用できます。")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
                 Toggle("サンプルデータで表示", isOn: $model.settings.demo)
                 if !model.settings.demo {
                     SecureField("Open Token", text: $model.token)
@@ -153,6 +149,8 @@ struct SettingsView: View {
                         }
                     }
                 }
+                Text("機器を選んだら「保存して表示に反映」を押してください。")
+                    .font(.caption).foregroundStyle(.secondary)
             }
             .formStyle(.grouped)
             .disabled(model.busy)
@@ -165,9 +163,9 @@ struct SettingsView: View {
                     .disabled(model.busy)
                 Spacer()
                 if model.busy { ProgressView().controlSize(.small) }
-                Button("キャンセル") { model.cancel(); onClose() }
+                Button("キャンセル") { model.cancel(); onClose(.cancel) }
                     .keyboardShortcut(.cancelAction)
-                Button("保存") { model.save(completion: onClose) }
+                Button("保存して表示に反映") { model.save { onClose(.OK) } }
                     .keyboardShortcut(.defaultAction)
                     .disabled(!model.canSave)
             }

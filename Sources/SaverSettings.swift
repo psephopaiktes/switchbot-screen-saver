@@ -2,21 +2,7 @@ import Foundation
 import ScreenSaver
 import Security
 
-enum DisplayStyle: String, CaseIterable, Identifiable {
-    case plain, liquidGlass
-    var id: String { rawValue }
-    var title: String { self == .plain ? "ミニマル" : "Liquid Glass" }
-
-    static var glassAvailable: Bool {
-        #if compiler(>=6.2)
-        if #available(macOS 26.0, *) { return true }
-        #endif
-        return false
-    }
-}
-
 struct SaverSettings: Equatable {
-    var style: DisplayStyle = .plain
     var demo = true
     var deviceID = ""
     var deviceName = ""
@@ -24,6 +10,7 @@ struct SaverSettings: Equatable {
 
 final class SettingsRepository {
     static let identifier = "dev.psephopaiktes.SwitchBotScreenSaver"
+    static let changedNotification = Notification.Name(identifier + ".settingsChanged")
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = ScreenSaverDefaults(forModuleWithName: identifier)!) {
@@ -32,19 +19,28 @@ final class SettingsRepository {
 
     func load() -> SaverSettings {
         SaverSettings(
-            style: DisplayStyle(rawValue: defaults.string(forKey: "style") ?? "") ?? .plain,
             demo: defaults.object(forKey: "demo") == nil ? true : defaults.bool(forKey: "demo"),
             deviceID: defaults.string(forKey: "deviceID") ?? "",
             deviceName: defaults.string(forKey: "deviceName") ?? ""
         )
     }
 
+    func synchronize() { defaults.synchronize() }
+
+    var revision: String { defaults.string(forKey: "revision") ?? "" }
+
     func save(_ settings: SaverSettings) {
-        defaults.set(settings.style.rawValue, forKey: "style")
+        defaults.removeObject(forKey: "style")
         defaults.set(settings.demo, forKey: "demo")
         defaults.set(settings.deviceID, forKey: "deviceID")
         defaults.set(settings.deviceName, forKey: "deviceName")
+        // 同じ機器のまま認証情報だけ変更した場合も表示側を更新する。
+        defaults.set(UUID().uuidString, forKey: "revision")
         defaults.synchronize()
+        // 通知に認証情報・機器情報を含めない。
+        DistributedNotificationCenter.default().postNotificationName(
+            Self.changedNotification, object: nil, userInfo: nil, deliverImmediately: true
+        )
     }
 }
 
