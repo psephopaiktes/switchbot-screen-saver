@@ -26,7 +26,7 @@ jobs:
         run: ./scripts/package.sh
       - name: Run hosted tests
         env:
-          DESIGN_PREVIEW_DIR: ${{ github.workspace }}/build/design-previews
+          TEST_RUNNER_DESIGN_PREVIEW_DIR: ${{ github.workspace }}/build/design-previews
         run: >-
           xcodebuild -project SwitchBotScreenSaver.xcodeproj
           -scheme SwitchBotSaverPreview -configuration Debug
