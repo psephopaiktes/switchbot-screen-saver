@@ -9,28 +9,15 @@ python3 scripts/update-cask.py --version "$version" \
 ruby -c Casks/switchbot-screen-saver.rb
 ruby -c build/switchbot-screen-saver.rb
 
-# A temporary tap and local server test the just-built archive, not the previous release.
+# A temporary tap tests the just-built archive, not the previous release.
 export HOMEBREW_NO_AUTO_UPDATE=1
 brew tap-new codex/saver-ci
 mkdir -p "$(brew --repository codex/saver-ci)/Casks"
-python3 - <<'PY' > build/homebrew-http.log 2>&1 &
-from functools import partial
-from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
-from pathlib import Path
-server = ThreadingHTTPServer(('127.0.0.1', 0), partial(SimpleHTTPRequestHandler, directory='build'))
-Path('build/homebrew-port').write_text(str(server.server_port))
-server.serve_forever()
-PY
-saver_http_pid=$!
-trap 'kill "$saver_http_pid" 2>/dev/null || true; brew untap codex/saver-ci >/dev/null 2>&1 || true' EXIT
-for attempt in {1..50}; do
-  [[ -s build/homebrew-port ]] && break
-  sleep 0.1
-done
-port="$(cat build/homebrew-port)"
+trap 'brew untap codex/saver-ci >/dev/null 2>&1 || true' EXIT
+archive_url="$(python3 -c 'from pathlib import Path; print(Path("build/SwitchBotScreenSaver-macos.tar.gz").resolve().as_uri())')"
 python3 scripts/update-cask.py --version "$version" \
   --archive build/SwitchBotScreenSaver-macos.tar.gz \
-  --url "http://127.0.0.1:$port/SwitchBotScreenSaver-macos.tar.gz" \
+  --url "$archive_url" \
   --output "$(brew --repository codex/saver-ci)/Casks/switchbot-screen-saver.rb"
 brew install --cask --screen-saverdir="$repo_root/build/brew-installed" codex/saver-ci/switchbot-screen-saver
 cmp Resources/thumbnail.png build/brew-installed/SwitchBotScreenSaver.saver/Contents/Resources/thumbnail.png
