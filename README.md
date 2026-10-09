@@ -6,13 +6,18 @@
 
 A free macOS screen saver with a clock, date, and temperature and humidity from your SwitchBot device.
 
-## Download and install
+## Install
 
-1. Download **SwitchBotScreenSaver-macos.zip** from [Releases](https://github.com/psephopaiktes/switchbot-screen-saver/releases), extract it, and double-click **SwitchBotScreenSaver.saver**. Choose **Install for this user only**.
-2. Select **SwitchBot Screen Saver** in your Mac's screen saver settings. If macOS says Apple cannot verify it, click **Done**, then go to **System Settings → Privacy & Security → Open Anyway** for this screen saver and follow the prompts.
-3. Quit System Settings with **⌘Q**, reopen it, and select the screen saver → **Options**.
+Use [Homebrew](https://brew.sh/):
 
-This download is not notarized by Apple. You may need to allow it again after an update. There is no need to disable macOS security globally.
+```sh
+brew tap psephopaiktes/switchbot-screen-saver https://github.com/psephopaiktes/switchbot-screen-saver
+brew install --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
+```
+
+Select **SwitchBot Screen Saver** in your Mac's screen saver settings. If Apple cannot verify it, click **Done** and allow it in **System Settings → Privacy & Security → Open Anyway**. Quit System Settings with **⌘Q**, reopen it, then open **Options** to configure the screen saver.
+
+This screen saver is not notarized by Apple. Homebrew installation may still require this permission.
 
 ## Connect SwitchBot
 
@@ -32,4 +37,24 @@ The app's menu names may vary by version. See the [official SwitchBot guide](htt
 
 In **Options → Display** (`表示`), toggle the clock, temperature, humidity, and date individually, and choose a 12- or 24-hour clock. Dates follow your Mac's region settings; weekdays use English abbreviations.
 
-To update, quit System Settings and the screen saver, then install the new `.saver` over the existing one. Your saved settings are kept.
+## Update and uninstall
+
+Quit System Settings and the screen saver before updating. Your saved settings are kept.
+
+```sh
+brew update
+brew upgrade --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
+```
+
+To uninstall:
+
+```sh
+brew uninstall --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
+```
+
+Brewfile:
+
+```ruby
+tap "psephopaiktes/switchbot-screen-saver", "https://github.com/psephopaiktes/switchbot-screen-saver"
+cask "psephopaiktes/switchbot-screen-saver/switchbot-screen-saver"
+```

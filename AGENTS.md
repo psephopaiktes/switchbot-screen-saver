@@ -35,12 +35,14 @@
 ## ビルド・配布・検証
 
 - Xcodeプロジェクトには`.saver`、プレビューアプリ、XCTestの3ターゲットがある。deployment targetは検証用macOS 13、Swift 5言語モード。製品の最低対応OSは未確定。
-- `scripts/package.sh`でReleaseのarm64／x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成・サムネイル読み込みを確認してZIPを作る。ZIPには`.saver`と英語・日本語のインストール案内を同梱する。
-- `.github/workflows/macos.yml`はPR／mainのビルド・XCTest・ZIP生成をmacOS 15／26／27（`xcode-27`）で検証する。`release.yml`は`vX.Y.Z`タグとバンドルのバージョン一致を確認し、同じCIが全環境で成功したらZIPをGitHub Releaseへ添付する。公開済みの同じタグのアセットは上書きしない。
-- READMEのダウンロード先は固定の[GitHub Releasesページ](https://github.com/psephopaiktes/switchbot-screen-saver/releases)。リポジトリはPublic（2026-10-09確認済み）で無料配布する。ライセンス・App Store配布は未決定。
+- `scripts/package.sh`でReleaseのarm64／x86_64ビルド、ad-hoc署名検証、別プロセスのBundle読み込み・principal class生成・サムネイル読み込みを確認してHomebrew用のtar.gzを作る。アーカイブには`.saver`だけを入れ、ZIP・同梱案内は生成しない。
+- `.github/workflows/macos.yml`はPR／mainのビルド・XCTest・Homebrewのインストール／削除・アーカイブ生成をmacOS 15／26／27（`xcode-27`）で検証する。`release.yml`は`vX.Y.Z`タグとバンドルのバージョン一致を確認し、同じCIが全環境で成功したらtar.gzをGitHub Releaseへ添付し、SHA-256固定のCaskをmainへ更新する。公開済みの同じタグのアセットは上書きしない。
+- READMEはHomebrewでのインストール・更新・削除を案内する。Tapは同じリポジトリのCasks/で管理し、初回brew tapではリポジトリURLを指定する。リポジトリはPublic（2026-10-09確認済み）で無料配布する。ライセンス・App Store配布は未決定。
 - 有料Apple Developer Programへの加入・Developer ID署名・公証は行わない方針。GatekeeperはOSの「このまま開く」で個別に許可し、全体のセキュリティを無効化しない。Developer ID署名・公証済みと断定しない。
 - 必要な検証は署名、レスポンス処理、主要操作など挙動を保証するものに絞る。Linuxでの構文・参照確認、macOS CIの自動検証、実機でのAPI・Keychain・OSホスト検証を区別する。[Macでの検証](docs/MACOS_VALIDATION.md)・[リリース手順](docs/RELEASING.md)参照。
 - 最新の確認済みReleaseは[v1.0.0](https://github.com/psephopaiktes/switchbot-screen-saver/releases/tag/v1.0.0)（build 9）。[PR CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37763919776)で3環境のビルド・バンドル／画像読み込み・各17テストが成功し、[Releaseワークフロー](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37764098429)も成功。実際の配布ZIPのCRC・バージョン・arm64／x86_64・元のサムネイル2枚・英日案内を確認済み。
+
+- 2026-10-09: ユーザーの希望によりHomebrew前提の配布へ変更。英日READMEをHomebrewとBrewfileの案内へ更新し、同梱案内2ファイルを削除。Homebrew用の1.0.1（build 10）を準備。新しいReleaseはCI成功後にtar.gzを添付し、同じリポジトリのCaskを更新する。Homebrewのインストール／削除と、OSのGatekeeper・Keychain許可は区別する。
 
 ## 実機での確認済み事項と残る課題
 

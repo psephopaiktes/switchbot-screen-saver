@@ -25,6 +25,8 @@ jobs:
           xcodebuild -version
       - name: Build and package screen saver
         run: ./scripts/package.sh
+      - name: Verify Homebrew install and uninstall
+        run: ./scripts/verify-homebrew.sh
       - name: Run hosted tests
         env:
           TEST_RUNNER_DESIGN_PREVIEW_DIR: ${{ github.workspace }}/build/design-previews
@@ -40,11 +42,11 @@ jobs:
           name: ScreenSaverTests-results-${{ matrix.os }}
           path: build/ScreenSaverTests.xcresult
           if-no-files-found: ignore
-      - name: Save installable ZIP
+      - name: Save Homebrew archive
         uses: actions/upload-artifact@v4
         with:
           name: SwitchBotScreenSaver-${{ matrix.os }}
-          path: build/SwitchBotScreenSaver-macos.zip
+          path: build/SwitchBotScreenSaver-macos.tar.gz
           if-no-files-found: error
       - name: Save design previews
         uses: actions/upload-artifact@v4

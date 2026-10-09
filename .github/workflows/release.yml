@@ -46,37 +46,33 @@ jobs:
         with:
           name: SwitchBotScreenSaver-macos-15
           path: build
-      - name: Verify archive and prepare release notes
+      - uses: actions/checkout@v4
+      - name: Verify archive and generate cask
         env:
           RELEASE_TAG: ${{ github.ref_name }}
           RELEASE_REPOSITORY: ${{ github.repository }}
         run: |
+          python3 scripts/update-cask.py --version "${RELEASE_TAG#v}" \
+            --archive build/SwitchBotScreenSaver-macos.tar.gz \
+            --repository "$RELEASE_REPOSITORY" --output build/switchbot-screen-saver.rb
           python3 - <<'PY'
-          import os, plistlib, zipfile
+          import os
           from pathlib import Path
-          tag = os.environ['RELEASE_TAG']
           repo = os.environ['RELEASE_REPOSITORY']
-          with zipfile.ZipFile('build/SwitchBotScreenSaver-macos.zip') as archive:
-              if archive.testzip() is not None:
-                  raise SystemExit('Archive integrity check failed.')
-              info_path = next(name for name in archive.namelist()
-                               if name.endswith('.saver/Contents/Info.plist')
-                               and not name.startswith('__MACOSX/'))
-              info = plistlib.loads(archive.read(info_path))
-              if info['CFBundleShortVersionString'] != tag[1:]:
-                  raise SystemExit('Archive version does not match the tag.')
-              if not any(name.endswith('/Getting Started.md') for name in archive.namelist()):
-                  raise SystemExit('English installation guide is missing.')
-          notes = (
-              'Download **SwitchBotScreenSaver-macos.zip** below, extract it, and open the `.saver`.\n\n'
-              'This free download is not notarized by Apple. If blocked, allow this screen saver in '
-              '**System Settings → Privacy & Security → Open Anyway**, then reopen System Settings.\n\n'
-              f'[English instructions](https://github.com/{repo}/blob/{tag}/README.md) | '
-              f'[日本語の手順](https://github.com/{repo}/blob/{tag}/README.ja.md)\n'
+          tag = os.environ['RELEASE_TAG']
+          Path('release-notes.md').write_text(
+              'Install with Homebrew:\n\n```sh\n'
+              f'brew tap psephopaiktes/switchbot-screen-saver https://github.com/{repo}\n'
+              'brew install --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver\n```\n\n'
+              'For updates, run `brew update` then '
+              '`brew upgrade --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver`.\n\n'
+              'This screen saver is not notarized by Apple. If blocked, allow it in '
+              '**System Settings → Privacy & Security → Open Anyway** and reopen System Settings.\n\n'
+              f'[English](https://github.com/{repo}/blob/{tag}/README.md) | '
+              f'[日本語](https://github.com/{repo}/blob/{tag}/README.ja.md)\n'
           )
-          Path('release-notes.md').write_text(notes)
           PY
-      - name: Attach ZIP and publish release
+      - name: Publish Homebrew archive
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -92,5 +88,10 @@ jobs:
             gh release create "$RELEASE_TAG" --verify-tag --draft \
               --title "$RELEASE_TAG" --notes-file release-notes.md
           fi
-          gh release upload "$RELEASE_TAG" build/SwitchBotScreenSaver-macos.zip --clobber
+          gh release upload "$RELEASE_TAG" build/SwitchBotScreenSaver-macos.tar.gz --clobber
           gh release edit "$RELEASE_TAG" --draft=false --notes-file release-notes.md
+      - name: Update Homebrew cask on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 scripts/publish-cask.py build/switchbot-screen-saver.rb
