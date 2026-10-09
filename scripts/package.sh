@@ -17,9 +17,7 @@ saver="$build_root/Build/Products/Release/SwitchBotScreenSaver.saver"
 xcrun swiftc -parse-as-library "$repo_root/scripts/verify-bundle.swift" -o "$staging/verify-bundle"
 "$staging/verify-bundle" "$saver"
 
-mkdir -p "$staging/SwitchBotScreenSaver"
-/usr/bin/ditto "$saver" "$staging/SwitchBotScreenSaver/SwitchBotScreenSaver.saver"
-cp "$repo_root/docs/INSTALL.md" "$staging/SwitchBotScreenSaver/はじめに.md"
-cp "$repo_root/docs/INSTALL.en.md" "$staging/SwitchBotScreenSaver/Getting Started.md"
-/usr/bin/ditto -c -k --keepParent "$staging/SwitchBotScreenSaver" "$output_root/SwitchBotScreenSaver-macos.zip"
-echo "作成: $output_root/SwitchBotScreenSaver-macos.zip"
+/usr/bin/ditto "$saver" "$staging/SwitchBotScreenSaver.saver"
+COPYFILE_DISABLE=1 /usr/bin/tar -czf "$output_root/SwitchBotScreenSaver-macos.tar.gz" \
+  -C "$staging" SwitchBotScreenSaver.saver
+echo "作成: $output_root/SwitchBotScreenSaver-macos.tar.gz"

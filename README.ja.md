@@ -6,13 +6,20 @@
 
 時計・日付・SwitchBot機器の温度と湿度を表示する、無料のmacOSスクリーンセーバーです。
 
-## ダウンロード・インストール
+## インストール
 
-1. [Releases](https://github.com/psephopaiktes/switchbot-screen-saver/releases)から **SwitchBotScreenSaver-macos.zip** をダウンロードして展開し、**SwitchBotScreenSaver.saver** をダブルクリック。「このユーザのみ」にインストールします。
-2. Macのスクリーンセーバー設定で **SwitchBot Screen Saver** を選択します。Appleが検証できないという警告が出た場合は「完了」で閉じ、**システム設定 → プライバシーとセキュリティ**で、このスクリーンセーバーの **「このまま開く」** を押してOSの確認に従います。
-3. システム設定を **⌘Q** で終了して開き直し、スクリーンセーバーを選択 → **「オプション」** を開きます。
+[Homebrew](https://brew.sh/)を使います。
 
-Appleの公証は行っていないため、更新時にも許可が必要になる場合があります。macOSのセキュリティ機能全体を無効にする必要はありません。
+```sh
+brew tap psephopaiktes/switchbot-screen-saver https://github.com/psephopaiktes/switchbot-screen-saver
+brew install --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
+```
+
+以前`.saver`を手動インストールしていた場合は、インストールコマンドに`--force`を付けると置き換えられます。
+
+Macのスクリーンセーバー設定で **SwitchBot Screen Saver** を選択します。Appleが検証できないという警告が出た場合は「完了」で閉じ、**システム設定 → プライバシーとセキュリティ → このまま開く**で許可してください。設定アプリを **⌘Q** で終了して開き直し、**「オプション」** で設定します。
+
+Appleの公証は行っていないため、Homebrew経由でも許可が必要になる場合があります。
 
 ## SwitchBotとの接続
 
@@ -32,4 +39,24 @@ Appleの公証は行っていないため、更新時にも許可が必要にな
 
 **「オプション」→「表示」** で時計・温度・湿度・日付を個別にオン／オフでき、時計は12／24時間表示を選べます。日付はMacの地域設定に合わせ、曜日は英語の略称で表示します。
 
-更新時はシステム設定とスクリーンセーバーを終了し、新しい`.saver`で置き換えてください。保存済みの設定は引き継ぎます。
+## 更新・アンインストール
+
+システム設定とスクリーンセーバーを終了してから実行してください。更新後も保存済みの設定は引き継ぎます。
+
+```sh
+brew update
+brew upgrade --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
+```
+
+削除する場合:
+
+```sh
+brew uninstall --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
+```
+
+Brewfile:
+
+```ruby
+tap "psephopaiktes/switchbot-screen-saver", "https://github.com/psephopaiktes/switchbot-screen-saver"
+cask "psephopaiktes/switchbot-screen-saver/switchbot-screen-saver"
+```

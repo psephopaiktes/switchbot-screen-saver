@@ -1,20 +1,22 @@
 # リリース手順
 
-利用者向けの案内は[English](../README.md) / [日本語](../README.ja.md)。READMEのダウンロード先は常に[Releases](https://github.com/psephopaiktes/switchbot-screen-saver/releases)です。
+利用者向けの案内は[English](../README.md) / [日本語](../README.ja.md)。Homebrew Caskは同じリポジトリの`Casks/switchbot-screen-saver.rb`で管理します。専用の別リポジトリは不要ですが、通常のTap名の規約に沿う名前ではないため、初回の`brew tap`にはREADMEのリポジトリURLを指定します。
 
-1. `Resources/ScreenSaver-Info.plist`の`CFBundleShortVersionString`と`CFBundleVersion`を更新し、変更をPRにまとめます。ログのバージョン表記も合わせます。
-2. macOS CIのビルド・テストが成功したリリース対象のコミットを選びます。通常はPRをmainに統合してから行います。
-3. そのコミットにバージョンタグを付けてpushします（例は`v1.0.0`）。
+1. `Resources/ScreenSaver-Info.plist`の`CFBundleShortVersionString`と`CFBundleVersion`を更新し、診断ログのバージョンも合わせてPRにまとめます。Caskはこの時点で更新しません。
+2. macOS CIのビルド・テスト・Homebrewのインストール／削除が成功したら、PRをmainへ統合します。
+3. そのコミットにバンドルと同じバージョンのタグを付けてpushします。
 
 ```sh
-git tag v1.0.0 <リリース対象のコミット>
-git push origin v1.0.0
+git tag v1.0.1 <リリース対象のコミット>
+git push origin v1.0.1
 ```
 
-タグをpushするとReleaseワークフローが起動します。タグとバンドルのバージョン一致を確認した後、既存のmacOS 15 / 26 / 27 CIを呼び出します。すべて成功するとmacOS 15で作成したarm64 / x86_64のZIPをReleaseへ添付し、公開状態にします。ZIPのファイル名は毎回`SwitchBotScreenSaver-macos.zip`です。OGPと一覧サムネイルにはユーザー提供画像を使用します。
+ReleaseワークフローはmacOS 15／26／27で検証し、macOS 15で作成したarm64／x86_64の`SwitchBotScreenSaver-macos.tar.gz`をReleaseへ添付します。アーカイブには`.saver`だけを入れ、ZIPや同梱説明ファイルは作りません。利用者はHomebrewでインストールするため、自分で展開する必要はありません。
 
-アップロード中はdraftにし、ZIPの添付後に公開します。公開済みの同じタグのReleaseは上書きしません。添付に失敗してdraftが残った場合はワークフローを再実行できます。コードを変更する場合はバージョンとタグを更新してください。
+添付したアーカイブのバージョンと構成を検証し、SHA-256を固定したCaskを生成します。Releaseの公開後、ワークフローの`contents: write`権限でmainのCaskを更新します。利用者は`brew update`と`brew upgrade --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver`で更新できます。
 
-ユーザーの指示によりPublicで配布する方針です。CodexのGitHub連携には公開設定の管理権限がなく、変更はHTTP 403で拒否されました。リポジトリ管理者がSettings → General → Danger Zone → Change repository visibilityでPublicへ変更してください。privateの間はReleaseの閲覧にもリポジトリへのアクセス権が必要です。Releaseワークフロー自体は公開設定を変更しません。ライセンスは未決定です。
+公開済みの同じタグのアセットは上書きしません。Cask更新は古いバージョンへの戻しや同じバージョンの内容変更を拒否し、GitHubのファイルSHAで同時更新の競合も検出します。mainの保護ルールがbotによるファイル更新を禁止する場合、Cask更新ジョブは失敗します。その場合はReleaseのアーカイブから`scripts/update-cask.py`でCaskを生成し、PRで更新してください。公開済みReleaseを作り直さないでください。
 
-配布物は無料・ad-hoc署名で、Developer ID署名・Apple公証は行いません。ダウンロード後の個別許可とインストールをMacで確認してください。証明書や利用者のToken・SecretをCIへ登録する必要はありません。
+最初のHomebrew配布は、検証済みPRブランチから作成したv1.0.1です。初回CaskはReleaseワークフローがmainへ登録済みです。旧ZIPは過去のReleaseの記録として残しますが、新しい配布処理では生成しません。
+
+リポジトリはPublicで無料配布します。ライセンスは未決定です。ad-hoc署名の配布物であり、Developer ID署名・Apple公証は行いません。Homebrew経由でもGatekeeperやKeychainの許可が不要になるとは扱わず、実機で確認してください。利用者のToken・Secretや証明書をCIに登録する必要はありません。
