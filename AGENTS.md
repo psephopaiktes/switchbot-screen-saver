@@ -40,7 +40,7 @@
 - READMEはHomebrewでのインストール・更新・削除を案内する。Tapは同じリポジトリのCasks/で管理し、初回brew tapではリポジトリURLを指定する。リポジトリはPublic（2026-10-09確認済み）で無料配布する。ライセンス・App Store配布は未決定。
 - 有料Apple Developer Programへの加入・Developer ID署名・公証は行わない方針。GatekeeperはOSの「このまま開く」で個別に許可し、全体のセキュリティを無効化しない。Developer ID署名・公証済みと断定しない。
 - 必要な検証は署名、レスポンス処理、主要操作など挙動を保証するものに絞る。Linuxでの構文・参照確認、macOS CIの自動検証、実機でのAPI・Keychain・OSホスト検証を区別する。[Macでの検証](docs/MACOS_VALIDATION.md)・[リリース手順](docs/RELEASING.md)参照。
-- 最新の確認済みReleaseは[v1.0.0](https://github.com/psephopaiktes/switchbot-screen-saver/releases/tag/v1.0.0)（build 9）。[PR CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37763919776)で3環境のビルド・バンドル／画像読み込み・各17テストが成功し、[Releaseワークフロー](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37764098429)も成功。実際の配布ZIPのCRC・バージョン・arm64／x86_64・元のサムネイル2枚・英日案内を確認済み。
+- 最新の確認済みReleaseは[v1.0.1](https://github.com/psephopaiktes/switchbot-screen-saver/releases/tag/v1.0.1)（build 10）。[PR CI](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37876466941)でmacOS 15／26／27のビルド・バンドル／画像読み込み・Homebrewのインストール／削除・各17テストが成功し、[Releaseワークフロー](https://github.com/psephopaiktes/switchbot-screen-saver/actions/runs/37876619727)も成功。公開アーカイブのSHA-256がmainのCaskと一致し、1.0.1・arm64／x86_64・元のサムネイル2枚・`.saver`のみの構成を確認済み。初回は検証済みPRブランチからReleaseし、ワークフローがmainへCaskを登録。以後はリリース手順どおりmain統合後にタグを付ける。
 
 - 2026-10-09: ユーザーの希望によりHomebrew前提の配布へ変更。英日READMEをHomebrewとBrewfileの案内へ更新し、同梱案内2ファイルを削除。Homebrew用の1.0.1（build 10）を準備。新しいReleaseはCI成功後にtar.gzを添付し、同じリポジトリのCaskを更新する。Homebrewのインストール／削除と、OSのGatekeeper・Keychain許可は区別する。
 

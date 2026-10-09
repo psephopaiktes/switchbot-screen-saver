@@ -1,6 +1,6 @@
 cask "switchbot-screen-saver" do
-  version "1.0.0"
-  sha256 "4d04d05ae7c0ceb5c87c0744c06e3bc3728eb3d05ccadc1f1dd36b5f8ba5e06e"
+  version "1.0.1"
+  sha256 "72124a7b432b1f373256b9dcf0f8302f4971584236050598c0cfb9f1204c87a5"
 
   url "https://github.com/psephopaiktes/switchbot-screen-saver/releases/download/v#{version}/SwitchBotScreenSaver-macos.tar.gz"
   name "SwitchBot Screen Saver"

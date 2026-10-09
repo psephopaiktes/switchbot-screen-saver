@@ -44,7 +44,7 @@ Developer ID署名・公証は行わず、OSの個別許可が必要な配布物
 
 ## オプションが開かない場合の診断
 
-macOS 27でユーザーがオプション表示と機器一覧取得を確認済みです。0.3.0では表示項目と時計・日付を追加しているため、バンドルを更新して確認してください。
+macOS 27でユーザーがオプション表示と機器一覧取得を確認済みです。Homebrewで最新のバンドルへ更新して確認してください。
 
 システム設定を終了して新しい`.saver`へ差し替え、開き直しても反応しない場合は、ターミナルで次を実行してから「オプション…」を押します。
 
@@ -54,8 +54,8 @@ log stream --level info --style compact --predicate 'subsystem == "dev.psephopai
 
 この診断は起動・オプションの参照・ウィンドウ作成／フォーカスの静的メッセージのみです。認証情報や機器情報は記録しません。確認後はControl-Cで終了します。
 
-- `Screen saver view initialized (0.3.1)`：新しいバンドルをホストが読み込んだ。
-- `configureSheet requested (0.3.1)`：OSから設定シートを要求された。
+- `Screen saver view initialized (1.0.1)`：新しいバンドルをホストが読み込んだ。
+- `configureSheet requested (1.0.1)`：OSから設定シートを要求された。
 - `Settings panel created`：設定ウィンドウを生成した。
 - `Settings panel became key`：設定ウィンドウが入力を受け取る状態になった。
 

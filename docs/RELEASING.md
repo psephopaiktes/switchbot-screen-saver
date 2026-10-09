@@ -17,6 +17,6 @@ ReleaseワークフローはmacOS 15／26／27で検証し、macOS 15で作成�
 
 公開済みの同じタグのアセットは上書きしません。Cask更新は古いバージョンへの戻しや同じバージョンの内容変更を拒否し、GitHubのファイルSHAで同時更新の競合も検出します。mainの保護ルールがbotによるファイル更新を禁止する場合、Cask更新ジョブは失敗します。その場合はReleaseのアーカイブから`scripts/update-cask.py`でCaskを生成し、PRで更新してください。公開済みReleaseを作り直さないでください。
 
-最初のHomebrew配布はv1.0.1です。旧ZIPは過去のReleaseの記録として残しますが、新しい配布処理では生成しません。
+最初のHomebrew配布は、検証済みPRブランチから作成したv1.0.1です。初回CaskはReleaseワークフローがmainへ登録済みです。旧ZIPは過去のReleaseの記録として残しますが、新しい配布処理では生成しません。
 
 リポジトリはPublicで無料配布します。ライセンスは未決定です。ad-hoc署名の配布物であり、Developer ID署名・Apple公証は行いません。Homebrew経由でもGatekeeperやKeychainの許可が不要になるとは扱わず、実機で確認してください。利用者のToken・Secretや証明書をCIに登録する必要はありません。

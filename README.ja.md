@@ -15,6 +15,8 @@ brew tap psephopaiktes/switchbot-screen-saver https://github.com/psephopaiktes/s
 brew install --cask psephopaiktes/switchbot-screen-saver/switchbot-screen-saver
 ```
 
+以前`.saver`を手動インストールしていた場合は、インストールコマンドに`--force`を付けると置き換えられます。
+
 Macのスクリーンセーバー設定で **SwitchBot Screen Saver** を選択します。Appleが検証できないという警告が出た場合は「完了」で閉じ、**システム設定 → プライバシーとセキュリティ → このまま開く**で許可してください。設定アプリを **⌘Q** で終了して開き直し、**「オプション」** で設定します。
 
 Appleの公証は行っていないため、Homebrew経由でも許可が必要になる場合があります。
